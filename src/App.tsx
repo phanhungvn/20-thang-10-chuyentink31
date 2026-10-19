@@ -30,23 +30,23 @@ function ConfettiOverlay({ triggerBurst }: { triggerBurst: number }) {
   const particles = useRef<ConfettiParticle[]>([]);
   const animId = useRef<number | null>(null);
 
-  const addBurst = useCallback((count = 120) => {
+  const addBurst = useCallback((count = 140) => {
     if (!canvasRef.current) return;
     const w = canvasRef.current.width;
     const h = canvasRef.current.height;
-    const colors = ['#ff4081', '#ff80ab', '#ffd700', '#00ffcc', '#ffffff', '#ff1744', '#ffe57f'];
+    const colors = ['#e91e63', '#ff4081', '#ffd700', '#ff80ab', '#ffffff', '#ff1744', '#ffe57f', '#00e676'];
 
     for (let i = 0; i < count; i++) {
       const isLeft = Math.random() > 0.5;
       particles.current.push({
-        x: isLeft ? w * 0.2 + (Math.random() - 0.5) * 100 : w * 0.8 + (Math.random() - 0.5) * 100,
-        y: h * 0.4 + (Math.random() - 0.5) * 100,
-        w: 8 + Math.random() * 8,
-        h: 6 + Math.random() * 10,
+        x: isLeft ? w * 0.2 + (Math.random() - 0.5) * 120 : w * 0.8 + (Math.random() - 0.5) * 120,
+        y: h * 0.35 + (Math.random() - 0.5) * 100,
         vx: (Math.random() - 0.5) * 14 + (isLeft ? 4 : -4),
-        vy: -8 - Math.random() * 12,
+        vy: -9 - Math.random() * 12,
+        w: 9 + Math.random() * 9,
+        h: 7 + Math.random() * 11,
         rot: Math.random() * Math.PI * 2,
-        vRot: (Math.random() - 0.5) * 0.2,
+        vRot: (Math.random() - 0.5) * 0.22,
         color: colors[Math.floor(Math.random() * colors.length)],
         shape: Math.random() > 0.4 ? 'petal' : Math.random() > 0.5 ? 'circle' : 'rect',
       });
@@ -55,7 +55,7 @@ function ConfettiOverlay({ triggerBurst }: { triggerBurst: number }) {
 
   useEffect(() => {
     if (triggerBurst > 0) {
-      addBurst(150);
+      addBurst(160);
     }
   }, [triggerBurst, addBurst]);
 
@@ -79,8 +79,8 @@ function ConfettiOverlay({ triggerBurst }: { triggerBurst: number }) {
         const p = particles.current[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.22; // gravity
-        p.vx *= 0.985; // drag
+        p.vy += 0.22;
+        p.vx *= 0.985;
         p.rot += p.vRot;
 
         ctx.save();
@@ -90,7 +90,7 @@ function ConfettiOverlay({ triggerBurst }: { triggerBurst: number }) {
 
         if (p.shape === 'petal') {
           ctx.beginPath();
-          ctx.ellipse(0, 0, p.w * 0.7, p.h * 0.4, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, p.w * 0.7, p.h * 0.45, 0, 0, Math.PI * 2);
           ctx.fill();
         } else if (p.shape === 'circle') {
           ctx.beginPath();
@@ -131,7 +131,7 @@ function ConfettiOverlay({ triggerBurst }: { triggerBurst: number }) {
 }
 
 // ==========================================
-// 2. Sound & BGM Toggle Control
+// 2. Sound & BGM Toggle Control (Light Theme)
 // ==========================================
 function SoundControlButton() {
   const [soundEnabled, setSoundEnabled] = useState(sounds.enabled);
@@ -159,23 +159,23 @@ function SoundControlButton() {
         zIndex: 160,
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
+        gap: '8px',
       }}
     >
       <button
         onClick={toggleSound}
         title={soundEnabled ? 'Tắt hiệu ứng âm thanh' : 'Bật hiệu ứng âm thanh'}
         style={{
-          padding: '9px 14px',
-          background: soundEnabled ? 'rgba(0, 255, 170, 0.15)' : 'rgba(8, 14, 28, 0.88)',
-          border: soundEnabled ? '1px solid #00ffaa' : '1px solid rgba(255, 255, 255, 0.2)',
+          padding: '9px 15px',
+          background: soundEnabled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.8)',
+          border: soundEnabled ? '1.5px solid #e91e63' : '1px solid rgba(0, 0, 0, 0.15)',
           borderRadius: '30px',
-          color: soundEnabled ? '#00ffaa' : '#888',
+          color: soundEnabled ? '#c2185b' : '#777',
           fontSize: '13px',
           fontWeight: 'bold',
           cursor: 'pointer',
-          backdropFilter: 'blur(12px)',
-          boxShadow: soundEnabled ? '0 0 14px rgba(0, 255, 170, 0.3)' : 'none',
+          backdropFilter: 'blur(16px)',
+          boxShadow: soundEnabled ? '0 4px 16px rgba(233, 30, 99, 0.25)' : '0 2px 8px rgba(0,0,0,0.06)',
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
@@ -190,16 +190,16 @@ function SoundControlButton() {
         onClick={toggleBgm}
         title={bgmActive ? 'Tắt nhạc nền' : 'Bật nhạc nền du dương'}
         style={{
-          padding: '9px 14px',
-          background: bgmActive ? 'linear-gradient(135deg, rgba(255, 105, 180, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%)' : 'rgba(8, 14, 28, 0.88)',
-          border: bgmActive ? '1px solid #ff69b4' : '1px solid rgba(255, 255, 255, 0.2)',
+          padding: '9px 15px',
+          background: bgmActive ? 'linear-gradient(135deg, #fff0f5 0%, #ffebee 100%)' : 'rgba(255, 255, 255, 0.8)',
+          border: bgmActive ? '1.5px solid #d81b60' : '1px solid rgba(0, 0, 0, 0.15)',
           borderRadius: '30px',
-          color: bgmActive ? '#ff88bb' : '#888',
+          color: bgmActive ? '#ad1457' : '#777',
           fontSize: '13px',
           fontWeight: 'bold',
           cursor: 'pointer',
-          backdropFilter: 'blur(12px)',
-          boxShadow: bgmActive ? '0 0 16px rgba(255, 105, 180, 0.4)' : 'none',
+          backdropFilter: 'blur(16px)',
+          boxShadow: bgmActive ? '0 4px 18px rgba(216, 27, 96, 0.3)' : '0 2px 8px rgba(0,0,0,0.06)',
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
@@ -214,7 +214,7 @@ function SoundControlButton() {
 }
 
 // ==========================================
-// 3. Fullscreen Button
+// 3. Fullscreen Button (Light Theme)
 // ==========================================
 function FullscreenButton() {
   const isFullscreen = useHandStore((state) => state.isFullscreen);
@@ -233,27 +233,342 @@ function FullscreenButton() {
         alignItems: 'center',
         gap: '8px',
         padding: '9px 18px',
-        background: 'rgba(8, 14, 28, 0.88)',
-        border: '1px solid rgba(255, 105, 180, 0.45)',
+        background: 'rgba(255, 255, 255, 0.95)',
+        border: '1.5px solid #ffd700',
         borderRadius: '30px',
-        color: '#ff88bb',
+        color: '#880e4f',
         fontSize: '13px',
         fontWeight: 'bold',
         cursor: 'pointer',
-        backdropFilter: 'blur(12px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6), 0 0 14px rgba(255, 105, 180, 0.25)',
+        backdropFilter: 'blur(16px)',
+        boxShadow: '0 4px 20px rgba(233, 30, 99, 0.2), 0 0 10px rgba(255, 215, 0, 0.3)',
         transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
     >
       <span style={{ fontSize: '15px' }}>{isFullscreen ? '✕' : '⛶'}</span>
       <span>{isFullscreen ? 'Thu nhỏ' : 'Toàn màn hình'}</span>
-      <span style={{ fontSize: '10px', opacity: 0.6, padding: '1px 5px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>F</span>
+      <span style={{ fontSize: '10px', opacity: 0.7, padding: '1px 5px', background: 'rgba(233, 30, 99, 0.1)', borderRadius: '4px', color: '#c2185b' }}>F</span>
     </button>
   );
 }
 
 // ==========================================
-// 4. Realtime Gesture Guide (Left Sidebar)
+// 4. Welcome Landing Overlay (Mới vào có chữ Bắt Đầu)
+// ==========================================
+function WelcomeLandingOverlay() {
+  const hasStarted = useHandStore((state) => state.hasStarted);
+  const showGestureModal = useHandStore((state) => state.showGestureModal);
+  const openGestureModal = useHandStore((state) => state.openGestureModal);
+
+  if (hasStarted || showGestureModal) return null;
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 200,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(255, 240, 245, 0.75)',
+        backdropFilter: 'blur(20px)',
+      }}
+    >
+      <div
+        style={{
+          background: 'rgba(255, 255, 255, 0.96)',
+          border: '2px solid #ffd700',
+          borderRadius: '32px',
+          padding: '40px 48px',
+          boxShadow: '0 20px 60px rgba(216, 27, 96, 0.25), 0 0 40px rgba(255, 215, 0, 0.3)',
+          textAlign: 'center',
+          maxWidth: '640px',
+          width: '90%',
+          animation: 'floatGentle 4s infinite ease-in-out',
+        }}
+      >
+        <div style={{ fontSize: '48px', marginBottom: '10px' }}>🌸 💖 👑 💖 🌸</div>
+        <div style={{ fontSize: '13px', fontWeight: '800', color: '#c2185b', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>
+          20 THÁNG 10 • NGÀY PHỤ NỮ VIỆT NAM
+        </div>
+        <h1
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: '34px',
+            fontWeight: '900',
+            color: '#880e4f',
+            margin: '0 0 14px 0',
+            textShadow: '0 2px 10px rgba(216, 27, 96, 0.15)',
+          }}
+        >
+          ĐẠI TIỆC TÔN VINH PHÁI ĐẸP
+        </h1>
+        <p
+          style={{
+            fontSize: '15.5px',
+            color: '#455a64',
+            lineHeight: '1.65',
+            margin: '0 0 28px 0',
+          }}
+        >
+          Chào mừng quý vị đến với hệ thống trình diễn <b>Kiếm Khí Vũ Trụ & Triển Lãm 9 Mỹ Nhân</b> tương tác không chạm bằng công nghệ AI nhận diện cử chỉ bàn tay.
+        </p>
+
+        <button
+          onClick={() => {
+            sounds.playChime(1.2);
+            openGestureModal();
+          }}
+          style={{
+            padding: '18px 48px',
+            borderRadius: '40px',
+            background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 50%, #880e4f 100%)',
+            border: '2px solid #ffd700',
+            color: '#ffffff',
+            fontSize: '18px',
+            fontWeight: '900',
+            letterSpacing: '1px',
+            cursor: 'pointer',
+            boxShadow: '0 8px 30px rgba(216, 27, 96, 0.5), 0 0 20px #ffd700',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            animation: 'pulseGold 2s infinite ease-in-out',
+            transition: 'transform 0.2s',
+          }}
+        >
+          <span style={{ fontSize: '24px' }}>🌟</span>
+          <span>BẮT ĐẦU BUỔI LỄ</span>
+          <span style={{ fontSize: '20px' }}>▶</span>
+        </button>
+
+        <div style={{ marginTop: '16px', fontSize: '12px', color: '#880e4f', opacity: 0.8 }}>
+          Nhấn BẮT ĐẦU để xem danh sách cử chỉ và khởi động camera AI
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 5. Gesture List Modal (Danh sách ký hiệu nhấn OK mới bắt đầu)
+// ==========================================
+function GestureListModal({ onConfirmStart }: { onConfirmStart: () => void }) {
+  const showGestureModal = useHandStore((state) => state.showGestureModal);
+
+  if (!showGestureModal) return null;
+
+  const gestures = [
+    {
+      step: 'Bước 1',
+      icon: '✊',
+      name: 'Nắm Đấm Bàn Tay',
+      desc: 'Tạo quả cầu kiếm bảo vệ',
+      detail: 'Thu gom các thanh kiếm vào bên trong một quả cầu năng lượng xoay tròn.',
+    },
+    {
+      step: 'Bước 2',
+      icon: '🖐️',
+      name: 'Mở 5 Ngón Tay',
+      desc: 'Mở triển lãm 9 mỹ nhân',
+      detail: 'Bung tỏa không gian 3D hiển thị 9 bức ảnh xếp thành hình cung lộng lẫy.',
+    },
+    {
+      step: 'Bước 3',
+      icon: '☝️',
+      name: 'Lướt 1 Ngón Qua Trái',
+      desc: 'Xem người tiếp theo (1->9)',
+      detail: 'Chỉ cần giơ 1 ngón trỏ lướt nhẹ sang trái. Ảnh phóng to bên trái, thông tin VIP to bên phải!',
+    },
+    {
+      step: 'Bước 4',
+      icon: '🔒',
+      name: 'Chống Nhiễu Tín Hiệu',
+      desc: 'Giơ 2 ngón (giữa + út) khóa',
+      detail: 'Khóa cảm biến khi có người lạ quơ tay. Giơ 3 ngón (trỏ + giữa + út) để Mở Khóa.',
+    },
+    {
+      step: 'Bước 5',
+      icon: '✌️',
+      name: 'Giơ 2 Ngón Chữ V',
+      desc: 'Hiện thiệp 20/10 hoàng gia',
+      detail: 'Cử chỉ chữ V (hoặc lướt hết 9 ảnh) sẽ tự động triệu hồi chiếc thiệp mừng dát vàng.',
+    },
+    {
+      step: 'Bước 6',
+      icon: '👏',
+      name: 'Chụp 2 Bàn Tay',
+      desc: 'Mở thiệp bung pháo hoa',
+      detail: 'Mở 2 bàn tay 5 ngón rồi chụp lại với nhau để bung mở nắp thiệp, pháo hoa & hoa hồng rơi.',
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 210,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(255, 240, 245, 0.85)',
+        backdropFilter: 'blur(22px)',
+        padding: '20px',
+      }}
+    >
+      <div
+        style={{
+          background: 'rgba(255, 255, 255, 0.98)',
+          border: '2px solid #ffd700',
+          borderRadius: '32px',
+          padding: '32px 36px',
+          boxShadow: '0 20px 60px rgba(216, 27, 96, 0.25), 0 0 35px rgba(255, 215, 0, 0.3)',
+          maxWidth: '820px',
+          width: '100%',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Modal Header */}
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <div style={{ fontSize: '13px', fontWeight: '800', color: '#c2185b', letterSpacing: '1px' }}>
+            HƯỚNG DẪN ĐIỀU KHIỂN SÂN KHẤU
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: '28px',
+              fontWeight: '900',
+              color: '#880e4f',
+              margin: '4px 0 6px 0',
+            }}
+          >
+            👑 DANH SÁCH 6 CỬ CHỈ BIỂU DIỄN 👑
+          </h2>
+          <p style={{ fontSize: '14px', color: '#546e7a', margin: 0 }}>
+            Vui lòng xem qua các cử chỉ dưới đây. Nhấn nút <b>OK</b> bên dưới để chính thức bắt đầu nhận diện:
+          </p>
+        </div>
+
+        {/* Gestures Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+            gap: '14px',
+            overflowY: 'auto',
+            paddingRight: '6px',
+            marginBottom: '24px',
+          }}
+        >
+          {gestures.map((g) => (
+            <div
+              key={g.step}
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #fff4f7 100%)',
+                border: '1.5px solid rgba(233, 30, 99, 0.25)',
+                borderRadius: '20px',
+                padding: '14px 16px',
+                boxShadow: '0 4px 15px rgba(216, 27, 96, 0.08)',
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'flex-start',
+              }}
+            >
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '14px',
+                  background: 'linear-gradient(135deg, #ff4081 0%, #c2185b 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '22px',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 12px rgba(233, 30, 99, 0.35)',
+                  border: '1px solid #ffd700',
+                }}
+              >
+                {g.icon}
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#c2185b', background: 'rgba(233, 30, 99, 0.1)', padding: '1px 6px', borderRadius: '6px' }}>
+                    {g.step}
+                  </span>
+                  <span style={{ fontSize: '13.5px', fontWeight: '800', color: '#263238' }}>
+                    {g.name}
+                  </span>
+                </div>
+                <div style={{ fontSize: '11.5px', fontWeight: 'bold', color: '#d81b60', marginTop: '2px' }}>
+                  {g.desc}
+                </div>
+                <div style={{ fontSize: '11px', color: '#607d8b', marginTop: '3px', lineHeight: '1.35' }}>
+                  {g.detail}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Shortcuts Note */}
+        <div
+          style={{
+            background: 'rgba(255, 248, 225, 0.9)',
+            border: '1px solid #ffe082',
+            borderRadius: '14px',
+            padding: '10px 16px',
+            fontSize: '11.5px',
+            color: '#6d4c41',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <span style={{ fontSize: '16px' }}>💡</span>
+          <span>
+            <b>Phím tắt MC/Người thuyết trình:</b> Phím <b>1</b> (Cầu kiếm), <b>2</b> (9 Ảnh), <b>3/C</b> (Thiệp), <b>Space</b> (Mở thiệp), <b>Mũi tên ← / →</b> (Lướt ảnh), <b>L</b> (Khóa), <b>F</b> (Toàn màn hình).
+          </span>
+        </div>
+
+        {/* Big OK Start Button */}
+        <div style={{ textAlign: 'center' }}>
+          <button
+            onClick={onConfirmStart}
+            style={{
+              padding: '16px 54px',
+              borderRadius: '40px',
+              background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 50%, #880e4f 100%)',
+              border: '2px solid #ffd700',
+              color: '#ffffff',
+              fontSize: '17px',
+              fontWeight: '900',
+              letterSpacing: '0.5px',
+              cursor: 'pointer',
+              boxShadow: '0 8px 30px rgba(216, 27, 96, 0.5), 0 0 20px #ffd700',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              animation: 'pulseGold 2s infinite ease-in-out',
+            }}
+          >
+            <span>✨ TÔI ĐÃ HIỂU & BẮT ĐẦU (OK) ✨</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 6. Realtime Gesture Guide (Light Theme Sidebar)
 // ==========================================
 function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
   const liveGestureLabel = useHandStore((state) => state.liveGestureLabel);
@@ -294,7 +609,7 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
       num: 3,
       icon: '☝️',
       name: 'Lướt 1 ngón qua trái',
-      desc: 'Chỉ cần 1 ngón trỏ dơ sang trái (1->9)',
+      desc: 'Chỉ 1 ngón trỏ dơ sang trái (1->9)',
       isCurrent: stage === 'GALLERY' && activeStep >= 3,
       onClick: () => {
         useHandStore.getState().nextPhoto();
@@ -306,7 +621,7 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
       num: 4,
       icon: isLocked ? '🔒' : '🟢',
       name: isLocked ? 'Đã khóa chống nhiễu' : 'Chống nhiễu tín hiệu',
-      desc: isLocked ? 'Giơ 3 ngón (+ trỏ) để mở khóa' : 'Giơ 2 ngón (giữa + út) để khóa',
+      desc: isLocked ? 'Giơ 3 ngón (+ trỏ) mở khóa' : 'Giơ 2 ngón (giữa + út) để khóa',
       isCurrent: isLocked,
       isSpecial: true,
       onClick: () => toggleLock(),
@@ -326,7 +641,7 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
       num: 6,
       icon: '👏',
       name: 'Chụp 2 bàn tay',
-      desc: 'Mở thiệp bung tỏa pháo hoa & hoa rơi',
+      desc: 'Mở thiệp bung tỏa pháo hoa',
       isCurrent: stage === 'CARD' && isCardOpened,
       onClick: () => {
         setStage('CARD');
@@ -347,13 +662,13 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
         top: '16px',
         left: '16px',
         zIndex: 150,
-        width: guideCollapsed ? 'auto' : '330px',
+        width: guideCollapsed ? 'auto' : '320px',
         maxHeight: 'calc(100vh - 100px)',
-        background: 'rgba(8, 14, 28, 0.92)',
-        border: '1px solid rgba(255, 105, 180, 0.4)',
+        background: 'rgba(255, 255, 255, 0.94)',
+        border: '1.5px solid rgba(233, 30, 99, 0.35)',
         borderRadius: '24px',
         backdropFilter: 'blur(24px)',
-        boxShadow: '0 12px 48px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 105, 180, 0.25)',
+        boxShadow: '0 12px 40px rgba(216, 27, 96, 0.15), 0 0 20px rgba(255, 215, 0, 0.2)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -362,23 +677,23 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
       {/* Header */}
       <div
         style={{
-          padding: '14px 18px',
-          background: 'linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(0, 255, 170, 0.12) 100%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          padding: '12px 18px',
+          background: 'linear-gradient(135deg, rgba(255, 240, 245, 0.9) 0%, rgba(255, 228, 235, 0.9) 100%)',
+          borderBottom: '1px solid rgba(233, 30, 99, 0.15)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '20px' }}>🌸</span>
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: '800', color: '#ff99cc', letterSpacing: '0.5px' }}>
+            <div style={{ fontSize: '13px', fontWeight: '800', color: '#880e4f', letterSpacing: '0.5px' }}>
               HƯỚNG DẪN CỬ CHỈ 20/10
             </div>
             {!guideCollapsed && (
-              <div style={{ fontSize: '10px', color: '#88a0c0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00ffaa', display: 'inline-block' }} />
+              <div style={{ fontSize: '10px', color: '#c2185b', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00e676', display: 'inline-block' }} />
                 <span>Trực tiếp thời gian thực</span>
               </div>
             )}
@@ -389,9 +704,9 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
           onClick={toggleGuide}
           title={guideCollapsed ? 'Mở rộng hướng dẫn' : 'Thu gọn hướng dẫn'}
           style={{
-            background: 'rgba(255, 255, 255, 0.12)',
+            background: 'rgba(233, 30, 99, 0.1)',
             border: 'none',
-            color: '#ff99cc',
+            color: '#ad1457',
             fontSize: '12px',
             fontWeight: 'bold',
             padding: '5px 12px',
@@ -404,22 +719,22 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
       </div>
 
       {!guideCollapsed && (
-        <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '12px', overflowY: 'auto' }}>
+        <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '10px', overflowY: 'auto' }}>
           {/* Progress Bar */}
-          <div style={{ background: 'rgba(255, 255, 255, 0.06)', borderRadius: '10px', padding: '8px 12px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px', color: '#ffd700', fontWeight: 'bold' }}>
+          <div style={{ background: 'rgba(233, 30, 99, 0.06)', borderRadius: '12px', padding: '8px 12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px', color: '#880e4f', fontWeight: 'bold' }}>
               <span>Tiến độ biểu diễn</span>
               <span>{currentStepNum} / 6 bước</span>
             </div>
-            <div style={{ height: '6px', width: '100%', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ height: '6px', width: '100%', background: 'rgba(0, 0, 0, 0.08)', borderRadius: '4px', overflow: 'hidden' }}>
               <div
                 style={{
                   height: '100%',
                   width: `${progressPercent}%`,
-                  background: 'linear-gradient(90deg, #00ffaa, #ff69b4, #ffd700)',
+                  background: 'linear-gradient(90deg, #ff4081, #d81b60, #ffd700)',
                   borderRadius: '4px',
                   transition: 'width 0.4s ease',
-                  boxShadow: '0 0 10px #ff69b4',
+                  boxShadow: '0 0 8px rgba(216, 27, 96, 0.5)',
                 }}
               />
             </div>
@@ -431,37 +746,35 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
               padding: '12px 14px',
               borderRadius: '18px',
               background: isLocked
-                ? 'rgba(255, 68, 102, 0.2)'
-                : 'linear-gradient(135deg, rgba(0, 255, 170, 0.18) 0%, rgba(255, 105, 180, 0.15) 100%)',
-              border: isLocked ? '1px solid #ff4466' : '1px solid rgba(0, 255, 170, 0.5)',
-              boxShadow: isLocked
-                ? '0 0 18px rgba(255, 68, 102, 0.35)'
-                : '0 0 18px rgba(0, 255, 170, 0.3)',
+                ? 'rgba(255, 68, 102, 0.15)'
+                : 'linear-gradient(135deg, rgba(255, 240, 245, 0.95) 0%, rgba(255, 228, 235, 0.95) 100%)',
+              border: isLocked ? '1.5px solid #ff4466' : '1.5px solid rgba(233, 30, 99, 0.4)',
+              boxShadow: '0 4px 15px rgba(216, 27, 96, 0.12)',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: isLocked ? '#ff6688' : '#00ffaa', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isLocked ? '#ff4466' : '#00ffaa', display: 'inline-block', boxShadow: isLocked ? '0 0 8px #ff4466' : '0 0 8px #00ffaa' }} />
+              <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: isLocked ? '#ff4466' : '#c2185b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isLocked ? '#ff4466' : '#00e676', display: 'inline-block' }} />
                 <span>CỬ CHỈ ĐANG PHÁT HIỆN</span>
               </span>
-              <span style={{ fontSize: '10px', opacity: 0.8, color: '#00ffaa', fontWeight: 'bold' }}>
+              <span style={{ fontSize: '10px', opacity: 0.8, color: '#880e4f', fontWeight: 'bold' }}>
                 {hasCamera ? 'AI Camera 60FPS' : 'Chuột / Cảm ứng'}
               </span>
             </div>
 
-            <div style={{ fontSize: '16.5px', fontWeight: '800', color: '#ffffff', margin: '4px 0 2px 0' }}>
+            <div style={{ fontSize: '16px', fontWeight: '800', color: '#2b0b1c', margin: '4px 0 2px 0' }}>
               {liveGestureLabel}
             </div>
 
-            <div style={{ fontSize: '11px', color: '#d0d8e8', opacity: 0.95 }}>
+            <div style={{ fontSize: '11px', color: '#546e7a' }}>
               {liveGestureDesc}
             </div>
           </div>
 
-          {/* Interactive Steps List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {/* Steps List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {steps.map((st) => (
               <div
                 key={st.num}
@@ -470,33 +783,34 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  padding: '9px 12px',
+                  padding: '8px 12px',
                   borderRadius: '16px',
                   background: st.isCurrent
-                    ? 'linear-gradient(135deg, rgba(255, 105, 180, 0.28) 0%, rgba(255, 215, 0, 0.15) 100%)'
-                    : 'rgba(255, 255, 255, 0.03)',
+                    ? 'linear-gradient(135deg, rgba(255, 64, 129, 0.15) 0%, rgba(255, 215, 0, 0.18) 100%)'
+                    : 'rgba(0, 0, 0, 0.02)',
                   border: st.isCurrent
-                    ? '1.5px solid #ff69b4'
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                  boxShadow: st.isCurrent ? '0 0 16px rgba(255, 105, 180, 0.45)' : 'none',
+                    ? '1.5px solid #d81b60'
+                    : '1px solid rgba(0, 0, 0, 0.06)',
+                  boxShadow: st.isCurrent ? '0 4px 16px rgba(216, 27, 96, 0.25)' : 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
               >
                 <div
                   style={{
-                    width: '34px',
-                    height: '34px',
+                    width: '32px',
+                    height: '32px',
                     borderRadius: '10px',
                     background: st.isCurrent
-                      ? 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)'
-                      : 'rgba(255, 255, 255, 0.08)',
+                      ? 'linear-gradient(135deg, #ff4081 0%, #c2185b 100%)'
+                      : 'rgba(233, 30, 99, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '17px',
+                    fontSize: '16px',
                     flexShrink: 0,
-                    boxShadow: st.isCurrent ? '0 2px 12px rgba(255, 105, 180, 0.6)' : 'none',
+                    boxShadow: st.isCurrent ? '0 2px 10px rgba(216, 27, 96, 0.4)' : 'none',
+                    color: st.isCurrent ? '#fff' : '#880e4f',
                   }}
                 >
                   {st.icon}
@@ -504,36 +818,21 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 'bold', color: st.isCurrent ? '#ffd700' : '#ffffff' }}>
+                    <span style={{ fontSize: '12.5px', fontWeight: 'bold', color: st.isCurrent ? '#880e4f' : '#263238' }}>
                       Bước {st.num}: {st.name}
                     </span>
                     {st.isCurrent && (
-                      <span style={{ fontSize: '10px', color: '#ff69b4', fontWeight: 'bold' }}>
+                      <span style={{ fontSize: '9.5px', color: '#c2185b', fontWeight: 'bold' }}>
                         ● Đang chọn
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize: '11px', color: '#a0b0c8', marginTop: '2px', lineHeight: '1.3' }}>
+                  <div style={{ fontSize: '10.5px', color: '#78909c', marginTop: '1px' }}>
                     {st.desc}
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Quick Shortcuts Hint */}
-          <div
-            style={{
-              padding: '9px 12px',
-              borderRadius: '12px',
-              background: 'rgba(0, 0, 0, 0.45)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              fontSize: '10.5px',
-              color: '#8899aa',
-              lineHeight: '1.4',
-            }}
-          >
-            💡 <b style={{ color: '#ccc' }}>Phím tắt nhanh:</b> Phím <b>1</b> (Cầu kiếm), <b>2</b> (9 Ảnh), <b>3/C</b> (Thiệp), <b>Space</b> (Mở thiệp), <b>L</b> (Khóa), <b>Mũi tên</b> (Lướt ảnh), <b>F</b> (Toàn màn hình).
           </div>
         </div>
       )}
@@ -542,9 +841,9 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
 }
 
 // ==========================================
-// 5. Gallery Overlay (Bottom Persona Card)
+// 7. VIP Persona Showcase (Ảnh phóng to bên trái, tên & mô tả to bên phải)
 // ==========================================
-function GalleryOverlay({ onCelebrate }: { onCelebrate: () => void }) {
+function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
   const stage = useHandStore((state) => state.stage);
   const currentPhotoIndex = useHandStore((state) => state.currentPhotoIndex);
   const nextPhoto = useHandStore((state) => state.nextPhoto);
@@ -577,121 +876,238 @@ function GalleryOverlay({ onCelebrate }: { onCelebrate: () => void }) {
     <div
       style={{
         position: 'fixed',
-        bottom: '82px',
+        bottom: '80px',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 140,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '12px',
+        gap: '14px',
         width: '92%',
-        maxWidth: '620px',
+        maxWidth: '860px',
         pointerEvents: 'auto',
       }}
     >
-      {/* Persona Card */}
+      {/* Executive VIP Split Card (Ảnh to bên trái, Mô tả & Tên to bên phải) */}
       <div
         style={{
           width: '100%',
-          background: 'rgba(10, 16, 32, 0.92)',
-          border: '1.5px solid rgba(255, 105, 180, 0.45)',
-          borderRadius: '24px',
-          padding: '16px 22px',
-          backdropFilter: 'blur(24px)',
-          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 105, 180, 0.25)',
+          background: 'rgba(255, 255, 255, 0.96)',
+          border: '2px solid #ffd700',
+          borderRadius: '32px',
+          padding: '24px 28px',
+          backdropFilter: 'blur(30px)',
+          boxShadow: '0 20px 60px rgba(216, 27, 96, 0.2), 0 0 35px rgba(255, 215, 0, 0.3)',
           display: 'flex',
           alignItems: 'center',
-          gap: '18px',
+          gap: '28px',
           transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-        {/* Avatar Box */}
+        {/* BÊN TRÁI: ẢNH PHÓNG TO TRANG TRỌNG (Gold Framed Portrait) */}
         <div
           style={{
-            width: '68px',
-            height: '68px',
-            borderRadius: '18px',
-            background: 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)',
+            width: '230px',
+            height: '290px',
+            borderRadius: '24px',
+            background: 'linear-gradient(135deg, #fff0f5 0%, #ffe4ec 50%, #ffd1dc 100%)',
+            border: '3px solid #ffd700',
+            boxShadow: '0 10px 30px rgba(216, 27, 96, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.4)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            boxShadow: '0 4px 18px rgba(255, 105, 180, 0.5)',
-            border: '2px solid #ffd700',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
-          <span style={{ fontSize: '22px' }}>👑</span>
-          <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#fff' }}>
-            Ảnh {current.id}
-          </span>
-        </div>
+          {/* Top Crown Ribbon */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
+              padding: '3px 12px',
+              borderRadius: '20px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              border: '1px solid #fff',
+            }}
+          >
+            <span style={{ fontSize: '13px' }}>👑</span>
+            <span style={{ fontSize: '10.5px', fontWeight: '900', color: '#4a0026' }}>
+              ẢNH {current.id} / 9
+            </span>
+          </div>
 
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '19px', fontWeight: '800', color: '#ffffff', letterSpacing: '0.3px' }}>
-              {current.name}
-            </span>
-            <span
-              style={{
-                fontSize: '11px',
-                fontWeight: 'bold',
-                color: '#ffd700',
-                background: 'rgba(255, 215, 0, 0.15)',
-                border: '1px solid rgba(255, 215, 0, 0.4)',
-                padding: '2px 8px',
-                borderRadius: '10px',
-              }}
-            >
-              ★ {current.role}
-            </span>
+          {/* Central Portrait Emblem */}
+          <div style={{ fontSize: '64px', margin: '14px 0 6px 0', filter: 'drop-shadow(0 4px 10px rgba(216, 27, 96, 0.3))' }}>
+            👸🏻
           </div>
 
           <div
             style={{
-              fontSize: '12.5px',
-              color: '#d0d8e8',
-              marginTop: '6px',
-              lineHeight: '1.4',
+              fontFamily: "'Playfair Display', serif",
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#880e4f',
+              letterSpacing: '0.5px',
+            }}
+          >
+            {current.label}
+          </div>
+
+          <div style={{ fontSize: '11px', color: '#c2185b', fontWeight: 'bold', marginTop: '2px' }}>
+            NỮ THẦN TỎA SÁNG
+          </div>
+
+          {/* Bottom Badge */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '12px',
+              background: 'rgba(255, 255, 255, 0.9)',
+              border: '1px solid #ff80ab',
+              padding: '4px 14px',
+              borderRadius: '14px',
+              fontSize: '10.5px',
+              fontWeight: 'bold',
+              color: '#ad1457',
+            }}
+          >
+            ★ 20 • 10 • 2026 ★
+          </div>
+        </div>
+
+        {/* BÊN PHẢI: TÊN VÀ MÔ TẢ TO LÊN CHUYÊN NGHIỆP & VIP */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Chức Danh / Danh Hiệu VIP */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <span
+              style={{
+                fontSize: '12px',
+                fontWeight: '900',
+                color: '#fff',
+                background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)',
+                padding: '4px 14px',
+                borderRadius: '16px',
+                boxShadow: '0 3px 10px rgba(216, 27, 96, 0.35)',
+                border: '1px solid #ffd700',
+              }}
+            >
+              👑 {current.role}
+            </span>
+            <span style={{ fontSize: '11.5px', color: '#ffb300', fontWeight: 'bold' }}>
+              ★★★★★
+            </span>
+          </div>
+
+          {/* HỌ VÀ TÊN RẤT TO, SANG TRỌNG */}
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: '34px',
+              fontWeight: '900',
+              color: '#880e4f',
+              margin: '0 0 12px 0',
+              lineHeight: '1.2',
+              textShadow: '0 2px 8px rgba(216, 27, 96, 0.1)',
+            }}
+          >
+            {current.name}
+          </h1>
+
+          {/* LỜI CHÚC TRÂN QUÝ (Khổ to, trang trọng) */}
+          <div
+            style={{
+              fontSize: '15px',
+              color: '#37474f',
+              lineHeight: '1.65',
               fontStyle: 'italic',
+              background: 'rgba(255, 240, 245, 0.7)',
+              padding: '12px 18px',
+              borderRadius: '18px',
+              borderLeft: '4px solid #d81b60',
+              marginBottom: '16px',
             }}
           >
             “{current.wish}”
           </div>
+
+          {/* Quick Actions for this person */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={onCelebrate}
+              style={{
+                background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
+                border: 'none',
+                color: '#4a0026',
+                borderRadius: '16px',
+                padding: '6px 14px',
+                fontSize: '12px',
+                fontWeight: '800',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                boxShadow: '0 3px 12px rgba(255, 215, 0, 0.4)',
+              }}
+            >
+              <span>🌸 Tung Hoa Chúc Mừng</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setStage('CARD');
+                sounds.playChime(1.5);
+              }}
+              style={{
+                background: 'rgba(233, 30, 99, 0.1)',
+                border: '1px solid #d81b60',
+                color: '#880e4f',
+                borderRadius: '16px',
+                padding: '6px 14px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              ✉️ Mở Thiệp 20/10
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Pills Bar */}
+      {/* Navigation Bar (Light Theme) */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          background: 'rgba(8, 14, 28, 0.90)',
-          padding: '6px 14px',
+          background: 'rgba(255, 255, 255, 0.96)',
+          padding: '6px 16px',
           borderRadius: '30px',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
+          border: '1.5px solid rgba(233, 30, 99, 0.25)',
           backdropFilter: 'blur(16px)',
-          boxShadow: '0 6px 24px rgba(0, 0, 0, 0.6)',
+          boxShadow: '0 8px 30px rgba(216, 27, 96, 0.15)',
         }}
       >
         <button
           onClick={handlePrev}
-          title="Người trước đó (← hoặc 1 ngón lướt phải)"
+          title="Người trước đó"
           style={{
-            background: 'rgba(255, 255, 255, 0.08)',
+            background: 'rgba(233, 30, 99, 0.08)',
             border: 'none',
-            color: '#fff',
+            color: '#880e4f',
             borderRadius: '16px',
-            padding: '5px 12px',
+            padding: '6px 14px',
             fontSize: '12px',
             fontWeight: 'bold',
             cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
           }}
         >
           ◀ Trước
@@ -705,18 +1121,18 @@ function GalleryOverlay({ onCelebrate }: { onCelebrate: () => void }) {
                 key={p.id}
                 onClick={() => handleSelect(idx)}
                 style={{
-                  width: '26px',
-                  height: '26px',
+                  width: '28px',
+                  height: '28px',
                   borderRadius: '50%',
-                  border: isSelected ? '1px solid #ffd700' : 'none',
+                  border: isSelected ? '2px solid #ffd700' : 'none',
                   background: isSelected
-                    ? 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
-                  color: '#fff',
-                  fontSize: '11px',
+                    ? 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)'
+                    : 'rgba(0, 0, 0, 0.06)',
+                  color: isSelected ? '#fff' : '#555',
+                  fontSize: '12px',
                   fontWeight: isSelected ? 'bold' : 'normal',
                   cursor: 'pointer',
-                  boxShadow: isSelected ? '0 0 10px rgba(255, 105, 180, 0.7)' : 'none',
+                  boxShadow: isSelected ? '0 0 12px rgba(216, 27, 96, 0.6)' : 'none',
                   transition: 'all 0.2s',
                 }}
               >
@@ -728,68 +1144,21 @@ function GalleryOverlay({ onCelebrate }: { onCelebrate: () => void }) {
 
         <button
           onClick={handleNext}
-          title="Người tiếp theo (→ hoặc 1 ngón lướt trái)"
+          title="Người tiếp theo"
           style={{
-            background: 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)',
+            background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)',
             border: 'none',
             color: '#fff',
             borderRadius: '16px',
-            padding: '5px 14px',
+            padding: '6px 16px',
             fontSize: '12px',
             fontWeight: 'bold',
             cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            boxShadow: '0 2px 10px rgba(255, 105, 180, 0.4)',
+            boxShadow: '0 2px 10px rgba(216, 27, 96, 0.35)',
           }}
         >
           <span>Sau</span>
           <span>▶</span>
-        </button>
-
-        <button
-          onClick={onCelebrate}
-          title="Tung thêm hoa & pháo chúc mừng"
-          style={{
-            background: 'rgba(255, 215, 0, 0.15)',
-            border: '1px solid #ffd700',
-            color: '#ffd700',
-            borderRadius: '16px',
-            padding: '5px 12px',
-            fontSize: '12px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-          }}
-        >
-          🌸 Tung Hoa
-        </button>
-
-        <button
-          onClick={() => {
-            setStage('CARD');
-            sounds.playChime(1.5);
-          }}
-          title="Chuyển sang Thiệp 20/10"
-          style={{
-            background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
-            border: 'none',
-            color: '#4a0026',
-            borderRadius: '16px',
-            padding: '5px 12px',
-            fontSize: '12px',
-            fontWeight: '800',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            boxShadow: '0 2px 10px rgba(255, 215, 0, 0.4)',
-          }}
-        >
-          ✉️ Thiệp 20/10
         </button>
       </div>
     </div>
@@ -797,7 +1166,7 @@ function GalleryOverlay({ onCelebrate }: { onCelebrate: () => void }) {
 }
 
 // ==========================================
-// 6. Card Celebration Modal
+// 8. Card Celebration Modal (Light Theme)
 // ==========================================
 function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
   const stage = useHandStore((state) => state.stage);
@@ -808,7 +1177,7 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
 
   if (stage !== 'CARD') return null;
 
-  const wishContent = `Kính chúc toàn thể phái đẹp luôn luôn xinh đẹp rạng rỡ, ngập tràn sức khỏe, hạnh phúc viên mãn bên những người yêu thương và luôn tự tin tỏa sáng với đam mê của mình! Chúc mừng ngày Phụ Nữ Việt Nam 20/10! 🌸💖`;
+  const wishContent = `Kính chúc toàn thể phái đẹp luôn luôn xinh đẹp rạng ngời, ngập tràn sức khỏe, hạnh phúc viên mãn bên những người yêu thương và luôn tự tin tỏa sáng với đam mê của mình! Chúc mừng ngày Phụ Nữ Việt Nam 20/10! 🌸💖`;
 
   const copyWish = () => {
     navigator.clipboard.writeText(wishContent);
@@ -827,7 +1196,7 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
     <div
       style={{
         position: 'fixed',
-        bottom: '82px',
+        bottom: '80px',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 140,
@@ -842,44 +1211,52 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
         <button
           onClick={handleOpenCard}
           style={{
-            padding: '16px 36px',
-            borderRadius: '35px',
-            background: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)',
+            padding: '16px 40px',
+            borderRadius: '40px',
+            background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 50%, #880e4f 100%)',
             border: '2px solid #ffd700',
             color: '#ffffff',
-            fontSize: '16.5px',
-            fontWeight: 'bold',
+            fontSize: '17px',
+            fontWeight: '900',
             cursor: 'pointer',
-            boxShadow: '0 0 32px rgba(255, 65, 108, 0.8), 0 0 16px #ffd700',
+            boxShadow: '0 0 35px rgba(216, 27, 96, 0.7), 0 0 16px #ffd700',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            animation: 'pulseGlow 2s infinite ease-in-out',
+            animation: 'pulseGold 2s infinite ease-in-out',
           }}
         >
-          <span style={{ fontSize: '22px' }}>👏</span>
+          <span style={{ fontSize: '24px' }}>👏</span>
           <span>Chụp 2 bàn tay hoặc Click để MỞ THIỆP!</span>
-          <span style={{ fontSize: '11px', opacity: 0.85, padding: '2px 8px', background: 'rgba(0,0,0,0.3)', borderRadius: '6px' }}>[Space]</span>
+          <span style={{ fontSize: '11px', opacity: 0.85, padding: '2px 8px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px' }}>[Space]</span>
         </button>
       ) : (
         <div
           style={{
-            background: 'rgba(12, 18, 36, 0.94)',
-            border: '2px solid rgba(255, 215, 0, 0.7)',
-            borderRadius: '28px',
-            padding: '24px 34px',
-            backdropFilter: 'blur(26px)',
-            boxShadow: '0 14px 50px rgba(0, 0, 0, 0.8), 0 0 45px rgba(255, 215, 0, 0.4)',
+            background: 'rgba(255, 255, 255, 0.98)',
+            border: '2px solid #ffd700',
+            borderRadius: '32px',
+            padding: '28px 36px',
+            backdropFilter: 'blur(30px)',
+            boxShadow: '0 20px 60px rgba(216, 27, 96, 0.25), 0 0 45px rgba(255, 215, 0, 0.4)',
             textAlign: 'center',
-            maxWidth: '580px',
+            maxWidth: '620px',
             animation: 'floatGentle 4s infinite ease-in-out',
           }}
         >
-          <div style={{ fontSize: '38px', marginBottom: '8px' }}>🌸 💖 👑 💖 🌸</div>
-          <h2 style={{ color: '#ffd700', fontSize: '24px', margin: '0 0 10px 0', textShadow: '0 0 16px rgba(255, 215, 0, 0.8)', fontWeight: '800' }}>
+          <div style={{ fontSize: '42px', marginBottom: '8px' }}>🌸 💖 👑 💖 🌸</div>
+          <h2
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: '#880e4f',
+              fontSize: '26px',
+              margin: '0 0 12px 0',
+              fontWeight: '900',
+            }}
+          >
             CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM 20/10!
           </h2>
-          <p style={{ color: '#ffffff', fontSize: '14.5px', lineHeight: '1.65', margin: '0 0 18px 0', fontStyle: 'italic' }}>
+          <p style={{ color: '#37474f', fontSize: '15.5px', lineHeight: '1.65', margin: '0 0 20px 0', fontStyle: 'italic' }}>
             {wishContent}
           </p>
 
@@ -890,15 +1267,15 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
                 sounds.playCelebrationFanfare();
               }}
               style={{
-                padding: '9px 20px',
-                borderRadius: '20px',
-                background: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)',
-                border: '1px solid #ffd700',
-                color: '#fff',
-                fontSize: '13px',
-                fontWeight: 'bold',
+                padding: '10px 22px',
+                borderRadius: '24px',
+                background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
+                border: 'none',
+                color: '#4a0026',
+                fontSize: '13.5px',
+                fontWeight: '900',
                 cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(255, 65, 108, 0.4)',
+                boxShadow: '0 4px 16px rgba(255, 215, 0, 0.4)',
               }}
             >
               🎆 Tung Thêm Pháo Hoa
@@ -907,12 +1284,12 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
             <button
               onClick={copyWish}
               style={{
-                padding: '9px 20px',
-                borderRadius: '20px',
-                background: copied ? 'rgba(0, 255, 170, 0.25)' : 'rgba(255, 255, 255, 0.12)',
-                border: copied ? '1px solid #00ffaa' : '1px solid rgba(255, 255, 255, 0.25)',
-                color: copied ? '#00ffaa' : '#fff',
-                fontSize: '13px',
+                padding: '10px 22px',
+                borderRadius: '24px',
+                background: copied ? 'rgba(0, 230, 118, 0.15)' : 'rgba(0, 0, 0, 0.05)',
+                border: copied ? '1.5px solid #00e676' : '1px solid rgba(0, 0, 0, 0.15)',
+                color: copied ? '#00c853' : '#455a64',
+                fontSize: '13.5px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
               }}
@@ -926,29 +1303,29 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
                 sounds.playWhoosh();
               }}
               style={{
-                padding: '9px 20px',
-                borderRadius: '20px',
-                background: 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)',
+                padding: '10px 22px',
+                borderRadius: '24px',
+                background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)',
                 border: 'none',
                 color: '#fff',
-                fontSize: '13px',
+                fontSize: '13.5px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(255, 105, 180, 0.4)',
+                boxShadow: '0 4px 16px rgba(216, 27, 96, 0.35)',
               }}
             >
-              🌸 Xem Lại 9 Ảnh
+              🌸 Xem Lại 9 Mỹ Nhân
             </button>
 
             <button
               onClick={() => setCardOpened(false)}
               style={{
-                padding: '9px 20px',
-                borderRadius: '20px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                color: '#ddd',
-                fontSize: '13px',
+                padding: '10px 22px',
+                borderRadius: '24px',
+                background: 'rgba(0, 0, 0, 0.05)',
+                border: '1px solid rgba(0, 0, 0, 0.15)',
+                color: '#666',
+                fontSize: '13.5px',
                 cursor: 'pointer',
               }}
             >
@@ -962,7 +1339,7 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
 }
 
 // ==========================================
-// 7. Bottom Stage Selector
+// 9. Bottom Stage Selector (Light Theme)
 // ==========================================
 function BottomStageSelector() {
   const currentStage = useHandStore((state) => state.stage);
@@ -992,12 +1369,12 @@ function BottomStageSelector() {
         display: 'flex',
         gap: '8px',
         zIndex: 130,
-        background: 'rgba(8, 14, 28, 0.88)',
+        background: 'rgba(255, 255, 255, 0.94)',
         padding: '6px 14px',
         borderRadius: '30px',
-        border: '1px solid rgba(255, 105, 180, 0.35)',
+        border: '1.5px solid rgba(233, 30, 99, 0.25)',
         backdropFilter: 'blur(16px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 105, 180, 0.2)',
+        boxShadow: '0 8px 30px rgba(216, 27, 96, 0.15)',
       }}
     >
       {stages.map(({ stage, name, key }) => {
@@ -1009,29 +1386,29 @@ function BottomStageSelector() {
             style={{
               padding: '7px 16px',
               borderRadius: '20px',
-              border: isActive ? '1px solid #ff69b4' : '1px solid transparent',
+              border: isActive ? '1.5px solid #ffd700' : '1px solid transparent',
               background: isActive
-                ? 'linear-gradient(135deg, rgba(255, 105, 180, 0.35) 0%, rgba(255, 215, 0, 0.2) 100%)'
-                : 'rgba(255, 255, 255, 0.05)',
-              color: isActive ? '#ffd700' : '#bbb',
+                ? 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)'
+                : 'rgba(0, 0, 0, 0.04)',
+              color: isActive ? '#ffd700' : '#555',
               fontWeight: isActive ? 'bold' : 'normal',
-              fontSize: '12px',
+              fontSize: '12.5px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               transition: 'all 0.2s ease',
               outline: 'none',
-              boxShadow: isActive ? '0 0 14px rgba(255, 105, 180, 0.5)' : 'none',
+              boxShadow: isActive ? '0 4px 16px rgba(216, 27, 96, 0.4)' : 'none',
             }}
           >
             <span>{name}</span>
             <span
               style={{
                 fontSize: '10px',
-                opacity: 0.6,
+                opacity: 0.8,
                 padding: '1px 5px',
-                background: 'rgba(255,255,255,0.1)',
+                background: isActive ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.06)',
                 borderRadius: '4px',
               }}
             >
@@ -1045,20 +1422,23 @@ function BottomStageSelector() {
 }
 
 // ==========================================
-// 8. Webcam PIP View
+// 10. Webcam PIP View
 // ==========================================
 function WebcamView({ onReady }: { onReady: (ready: boolean) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isReady, setIsReady] = useState(false);
+  const hasStarted = useHandStore((state) => state.hasStarted);
 
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && hasStarted) {
       initHandTracking(videoRef.current).then((success) => {
         setIsReady(success);
         onReady(success);
       });
     }
-  }, [onReady]);
+  }, [onReady, hasStarted]);
+
+  if (!hasStarted) return null;
 
   return (
     <video
@@ -1071,13 +1451,13 @@ function WebcamView({ onReady }: { onReady: (ready: boolean) => void }) {
         height: '102px',
         borderRadius: '16px',
         border: `2px solid ${
-          isReady ? 'rgba(0, 255, 170, 0.7)' : 'rgba(255, 100, 100, 0.4)'
+          isReady ? '#00e676' : 'rgba(255, 100, 100, 0.5)'
         }`,
         transform: 'scaleX(-1)',
         opacity: isReady ? 0.9 : 0,
         pointerEvents: 'none',
         zIndex: 100,
-        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.6)',
+        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
       }}
       autoPlay
       playsInline
@@ -1087,31 +1467,46 @@ function WebcamView({ onReady }: { onReady: (ready: boolean) => void }) {
 }
 
 // ==========================================
-// 9. Main Application Root
+// 11. Main Application Root
 // ==========================================
 export default function App() {
   const [hasCamera, setHasCamera] = useState(false);
   const [burstCount, setBurstCount] = useState(0);
+  const hasStarted = useHandStore((state) => state.hasStarted);
+  const confirmStart = useHandStore((state) => state.confirmStart);
 
   const triggerCelebrate = useCallback(() => {
     setBurstCount((c) => c + 1);
   }, []);
 
+  const handleConfirmStart = () => {
+    confirmStart();
+    sounds.playCelebrationFanfare();
+    triggerCelebrate();
+  };
+
   useEffect(() => {
-    // Check URL params for direct demo links (e.g. ?stage=photos or ?stage=card&open=true)
     const urlParams = new URLSearchParams(window.location.search);
     const stageParam = urlParams.get('stage')?.toLowerCase();
     const state = useHandStore.getState();
 
-    if (stageParam === 'orb' || stageParam === 'fist') {
-      state.setStage('FIST_ORB');
-    } else if (stageParam === 'photos' || stageParam === 'gallery') {
-      state.setStage('GALLERY');
-    } else if (stageParam === 'card') {
-      state.setStage('CARD');
-      if (urlParams.get('open') === '1' || urlParams.get('open') === 'true') {
-        state.setCardOpened(true);
-        triggerCelebrate();
+    const modalParam = urlParams.get('modal') || urlParams.get('guide') || urlParams.get('help');
+    if (modalParam) {
+      state.openGestureModal();
+    }
+
+    if (stageParam) {
+      state.confirmStart();
+      if (stageParam === 'orb' || stageParam === 'fist') {
+        state.setStage('FIST_ORB');
+      } else if (stageParam === 'photos' || stageParam === 'gallery') {
+        state.setStage('GALLERY');
+      } else if (stageParam === 'card') {
+        state.setStage('CARD');
+        if (urlParams.get('open') === '1' || urlParams.get('open') === 'true') {
+          state.setCardOpened(true);
+          triggerCelebrate();
+        }
       }
     }
 
@@ -1186,13 +1581,23 @@ export default function App() {
           <HandController />
         </Canvas>
 
+        {/* Welcome & Gesture List Overlays */}
+        <WelcomeLandingOverlay />
+        <GestureListModal onConfirmStart={handleConfirmStart} />
+
         <ConfettiOverlay triggerBurst={burstCount} />
         <SoundControlButton />
         <FullscreenButton />
-        <RealtimeGestureGuide hasCamera={hasCamera} />
-        <GalleryOverlay onCelebrate={triggerCelebrate} />
-        <CardCelebrationModal onCelebrate={triggerCelebrate} />
-        <BottomStageSelector />
+
+        {/* Live Controls only when active */}
+        {hasStarted && (
+          <>
+            <RealtimeGestureGuide hasCamera={hasCamera} />
+            <VipPersonaShowcase onCelebrate={triggerCelebrate} />
+            <CardCelebrationModal onCelebrate={triggerCelebrate} />
+            <BottomStageSelector />
+          </>
+        )}
       </div>
     </OrientationGuard>
   );

@@ -43,8 +43,12 @@ export function HandController() {
     );
 
     const now = clock.getElapsedTime();
-    const stage = useHandStore.getState().stage;
-    const isLocked = useHandStore.getState().isLocked;
+    const { stage, isLocked, hasStarted } = useHandStore.getState();
+
+    // Only recognize gestures once user has clicked Bắt Đầu and confirmed gestures!
+    if (!hasStarted) {
+      return;
+    }
 
     if (hasCamera) {
       lastVideoTime = globalVideo!.currentTime;

@@ -136,6 +136,14 @@ interface HandState {
   activeStep: number; // 1 to 6
   guideCollapsed: boolean;
 
+  // Onboarding & Theme
+  hasStarted: boolean;
+  showGestureModal: boolean;
+  theme: 'light' | 'dark';
+  openGestureModal: () => void;
+  confirmStart: () => void;
+  toggleTheme: () => void;
+
   setTarget: (pos: THREE.Vector3) => void;
   setTracking: (tracking: boolean) => void;
   setGestureMode: (mode: GestureMode) => void;
@@ -173,10 +181,18 @@ export const useHandStore = create<HandState>((set, get) => ({
   hintMessage: '✊ Nắm đấm để ngưng tụ kiếm vào quả cầu hộ thể...',
 
   // Real-time gesture defaults
-  liveGestureLabel: 'Đang lắng nghe camera...',
-  liveGestureDesc: 'Chưa phát hiện cử chỉ tay',
+  liveGestureLabel: 'Đang chờ bắt đầu buổi lễ...',
+  liveGestureDesc: 'Nhấn BẮT ĐẦU BUỔI LỄ để khởi động nhận diện',
   activeStep: 1,
   guideCollapsed: false,
+
+  // Onboarding & Theme defaults
+  hasStarted: false,
+  showGestureModal: false,
+  theme: 'light',
+  openGestureModal: () => set({ showGestureModal: true }),
+  confirmStart: () => set({ showGestureModal: false, hasStarted: true }),
+  toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
 
   setTarget: (pos) => set({ targetPosition: pos }),
   setTracking: (tracking) => set({ isTracking: tracking }),
