@@ -1,0 +1,12 @@
+services:
+  kiem-than:
+    build: .
+    container_name: kiem-than
+    restart: unless-stopped
+    ports:
+      - "1020:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
