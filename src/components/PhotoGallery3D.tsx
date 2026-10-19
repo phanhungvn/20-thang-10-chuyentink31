@@ -173,26 +173,26 @@ export function PhotoGallery3D() {
 
   const cardsRef = useRef<(THREE.Mesh | null)[]>([]);
 
-  // Halo Sparkles orbiting active card
+  // Halo Sparkles orbiting active card (NormalBlending for rich visibility)
   const [haloPositions, haloColors] = useMemo(() => {
-    const count = 120;
+    const count = 140;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
-      const r = 3.5 + Math.random() * 2.5;
+      const r = 3.6 + Math.random() * 2.4;
       pos[i * 3] = Math.cos(theta) * r;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
       pos[i * 3 + 2] = Math.sin(theta) * r;
 
       if (Math.random() > 0.5) {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.2;
-        col[i * 3 + 2] = 0.5; // Pink
+        col[i * 3] = 0.92;
+        col[i * 3 + 1] = 0.12;
+        col[i * 3 + 2] = 0.45; // Deep Rose
       } else {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.85;
-        col[i * 3 + 2] = 0.2; // Gold
+        col[i * 3] = 0.98;
+        col[i * 3 + 1] = 0.72;
+        col[i * 3 + 2] = 0.1; // Gold
       }
     }
     return [pos, col];
@@ -265,15 +265,14 @@ export function PhotoGallery3D() {
 
   return (
     <group ref={groupRef} position={[0, 1, 8]} visible={stage === 'GALLERY'}>
-      {/* Halo & Pedestal for Active Card */}
+      {/* Halo & Pedestal for Active Card (NormalBlending, Rich Color) */}
       <group ref={haloGroupRef} position={[0, 0, 0]}>
         <mesh ref={auraRef} position={[0, 0, -0.4]}>
           <planeGeometry args={[7.5, 10.2]} />
           <meshBasicMaterial
-            color="#ff4081"
+            color="#ff2d75"
             transparent
-            opacity={0.35}
-            blending={THREE.AdditiveBlending}
+            opacity={0.3}
             side={THREE.DoubleSide}
           />
         </mesh>
@@ -281,10 +280,9 @@ export function PhotoGallery3D() {
         <mesh ref={ringRef} position={[0, -5.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[3.2, 4.4, 48]} />
           <meshBasicMaterial
-            color="#ffd700"
+            color="#ffb300"
             transparent
             opacity={0.7}
-            blending={THREE.AdditiveBlending}
             side={THREE.DoubleSide}
           />
         </mesh>
@@ -295,11 +293,11 @@ export function PhotoGallery3D() {
             <bufferAttribute attach="attributes-color" args={[haloColors, 3]} />
           </bufferGeometry>
           <pointsMaterial
-            size={0.22}
+            size={0.28}
             vertexColors
             transparent
-            opacity={0.9}
-            blending={THREE.AdditiveBlending}
+            opacity={0.92}
+            sizeAttenuation
           />
         </points>
       </group>

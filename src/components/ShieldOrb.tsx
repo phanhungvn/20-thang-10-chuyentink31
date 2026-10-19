@@ -5,14 +5,17 @@ import { useHandStore, CONFIG } from '../store';
 
 export function ShieldOrb() {
   const stage = useHandStore((state) => state.stage);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const glowRef = useRef<THREE.Mesh>(null);
+  const orbGroupRef = useRef<THREE.Group>(null);
+  const crystalShellRef = useRef<THREE.Mesh>(null);
+  const goldWireRef = useRef<THREE.Mesh>(null);
   const ring1Ref = useRef<THREE.Mesh>(null);
   const ring2Ref = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
   const particlesRef = useRef<THREE.Points>(null);
 
+  // High-contrast swirling energy particles
   const [particlePositions, particleColors] = useMemo(() => {
-    const count = 650;
+    const count = 550;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const radius = CONFIG.shieldRadius * 1.05;
@@ -27,17 +30,20 @@ export function ShieldOrb() {
 
       const ratio = Math.random();
       if (ratio > 0.6) {
-        col[i * 3] = 0.0;
-        col[i * 3 + 1] = 1.0;
-        col[i * 3 + 2] = 0.65; // Cyan neon
+        // Imperial 24K Gold
+        col[i * 3] = 0.98;
+        col[i * 3 + 1] = 0.72;
+        col[i * 3 + 2] = 0.08;
       } else if (ratio > 0.3) {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.4;
-        col[i * 3 + 2] = 0.8; // Pink neon
+        // Royal Ruby Rose
+        col[i * 3] = 0.92;
+        col[i * 3 + 1] = 0.12;
+        col[i * 3 + 2] = 0.45;
       } else {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.88;
-        col[i * 3 + 2] = 0.2; // Gold
+        // Deep Crimson
+        col[i * 3] = 0.78;
+        col[i * 3 + 1] = 0.05;
+        col[i * 3 + 2] = 0.28;
       }
     }
     return [pos, col];
@@ -46,152 +52,120 @@ export function ShieldOrb() {
   useFrame(({ clock }) => {
     const targetPosition = useHandStore.getState().targetPosition;
     const isTracking = useHandStore.getState().isTracking;
-    const stage = useHandStore.getState().stage;
+    const currentStage = useHandStore.getState().stage;
     const time = clock.getElapsedTime();
 
-    const shouldShow = stage === 'FIST_ORB';
+    const isVisible = currentStage === 'FIST_ORB';
 
-    if (meshRef.current && glowRef.current && particlesRef.current) {
-      const targetOpacity = shouldShow ? 0.55 : 0;
-      const currentOpacity = (
-        meshRef.current.material as THREE.MeshBasicMaterial
-      ).opacity;
-      const newOpacity = THREE.MathUtils.lerp(
-        currentOpacity,
-        targetOpacity,
-        0.12
+    if (orbGroupRef.current) {
+      orbGroupRef.current.visible = isVisible;
+      if (!isVisible) return;
+
+      const targetScale = 1;
+      orbGroupRef.current.scale.lerp(
+        new THREE.Vector3(targetScale, targetScale, targetScale),
+        0.15
       );
 
-      (meshRef.current.material as THREE.MeshBasicMaterial).opacity = newOpacity;
-      (glowRef.current.material as THREE.MeshBasicMaterial).opacity = newOpacity * 0.4;
-      (particlesRef.current.material as THREE.PointsMaterial).opacity = shouldShow ? 0.95 : 0;
-
-      if (ring1Ref.current) {
-        (ring1Ref.current.material as THREE.MeshBasicMaterial).opacity = newOpacity * 0.7;
-      }
-      if (ring2Ref.current) {
-        (ring2Ref.current.material as THREE.MeshBasicMaterial).opacity = newOpacity * 0.7;
-      }
-
-      const isVis = newOpacity > 0.01;
-      meshRef.current.visible = isVis;
-      glowRef.current.visible = isVis;
-      particlesRef.current.visible = isVis;
-      if (ring1Ref.current) ring1Ref.current.visible = isVis;
-      if (ring2Ref.current) ring2Ref.current.visible = isVis;
-
+      // Position: Smoothly follow hand, or gentle breathing float at origin
       const currentPos = isTracking
         ? targetPosition
         : new THREE.Vector3(
-            Math.sin(time * 0.5) * 4,
-            Math.cos(time * 0.4) * 3,
+            Math.sin(time * 0.5) * 3,
+            Math.cos(time * 0.4) * 2,
             0
           );
+      orbGroupRef.current.position.lerp(currentPos, 0.12);
 
-      meshRef.current.position.lerp(currentPos, 0.12);
-      glowRef.current.position.lerp(currentPos, 0.12);
-      particlesRef.current.position.lerp(currentPos, 0.12);
-      if (ring1Ref.current) ring1Ref.current.position.lerp(currentPos, 0.12);
-      if (ring2Ref.current) ring2Ref.current.position.lerp(currentPos, 0.12);
-
-      const breathe = 1 + Math.sin(time * 3) * 0.05;
-      meshRef.current.scale.setScalar(breathe);
-      glowRef.current.scale.setScalar(breathe * 1.15);
-      particlesRef.current.scale.setScalar(breathe * 1.08);
-
-      meshRef.current.rotation.y = time * 0.6;
-      meshRef.current.rotation.x = time * 0.3;
-      particlesRef.current.rotation.y = -time * 0.8;
-      particlesRef.current.rotation.z = time * 0.4;
-
+      // Rotations
+      if (crystalShellRef.current) {
+        crystalShellRef.current.rotation.y = time * 0.45;
+        crystalShellRef.current.rotation.x = time * 0.25;
+      }
+      if (goldWireRef.current) {
+        goldWireRef.current.rotation.y = -time * 0.6;
+        goldWireRef.current.rotation.z = time * 0.35;
+      }
       if (ring1Ref.current) {
-        ring1Ref.current.rotation.x = time * 0.9;
-        ring1Ref.current.rotation.y = time * 0.45;
-        ring1Ref.current.scale.setScalar(breathe * 1.3);
+        ring1Ref.current.rotation.x = time * 0.8;
+        ring1Ref.current.rotation.y = time * 0.4;
       }
       if (ring2Ref.current) {
-        ring2Ref.current.rotation.z = -time * 0.8;
+        ring2Ref.current.rotation.z = -time * 0.7;
         ring2Ref.current.rotation.y = time * 0.5;
-        ring2Ref.current.scale.setScalar(breathe * 1.4);
+      }
+      if (ring3Ref.current) {
+        ring3Ref.current.rotation.x = -time * 0.5;
+        ring3Ref.current.rotation.z = time * 0.65;
+      }
+      if (particlesRef.current) {
+        particlesRef.current.rotation.y = time * 0.9;
+        particlesRef.current.rotation.x = -time * 0.4;
       }
     }
   });
 
-  const innerMaterial = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        color: 0x00ffaa,
-        transparent: true,
-        opacity: 0,
-        wireframe: true,
-        side: THREE.DoubleSide,
-        blending: THREE.AdditiveBlending,
-      }),
-    []
-  );
-
-  const glowMaterial = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        color: 0xff3388,
-        transparent: true,
-        opacity: 0,
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending,
-      }),
-    []
-  );
-
-  const ring1Material = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        color: 0xffd700,
-        transparent: true,
-        opacity: 0,
-        wireframe: true,
-        side: THREE.DoubleSide,
-        blending: THREE.AdditiveBlending,
-      }),
-    []
-  );
-
-  const ring2Material = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        color: 0x00ffcc,
-        transparent: true,
-        opacity: 0,
-        wireframe: true,
-        side: THREE.DoubleSide,
-        blending: THREE.AdditiveBlending,
-      }),
-    []
-  );
-
   return (
-    <group visible={stage === 'FIST_ORB'}>
-      <mesh ref={meshRef}>
-        <icosahedronGeometry args={[CONFIG.shieldRadius * 0.95, 2]} />
-        <primitive object={innerMaterial} attach="material" />
+    <group ref={orbGroupRef} visible={stage === 'FIST_ORB'}>
+      {/* 1. Translucent Rose Quartz Crystal Shell */}
+      <mesh ref={crystalShellRef}>
+        <icosahedronGeometry args={[CONFIG.shieldRadius * 0.98, 2]} />
+        <meshStandardMaterial
+          color="#ff2d75"
+          transparent
+          opacity={0.38}
+          roughness={0.2}
+          metalness={0.3}
+          emissive="#d81b60"
+          emissiveIntensity={0.4}
+          side={THREE.DoubleSide}
+        />
       </mesh>
 
-      <mesh ref={glowRef}>
-        <sphereGeometry args={[CONFIG.shieldRadius * 1.15, 32, 32]} />
-        <primitive object={glowMaterial} attach="material" />
+      {/* 2. Sharp Gold Lattice Wireframe */}
+      <mesh ref={goldWireRef}>
+        <icosahedronGeometry args={[CONFIG.shieldRadius * 1.01, 2]} />
+        <meshBasicMaterial
+          color="#ffd700"
+          wireframe
+          transparent
+          opacity={0.75}
+        />
       </mesh>
 
-      {/* Rotating Magic Rune Ring 1 */}
+      {/* 3. Golden Celestial Gyroscope Rings */}
       <mesh ref={ring1Ref}>
-        <torusGeometry args={[CONFIG.shieldRadius * 1.25, 0.08, 16, 64]} />
-        <primitive object={ring1Material} attach="material" />
+        <torusGeometry args={[CONFIG.shieldRadius * 1.2, 0.12, 16, 64]} />
+        <meshStandardMaterial
+          color="#ffb300"
+          metalness={0.9}
+          roughness={0.18}
+          emissive="#ff8f00"
+          emissiveIntensity={0.35}
+        />
       </mesh>
 
-      {/* Rotating Magic Rune Ring 2 */}
-      <mesh ref={ring2Ref}>
-        <torusGeometry args={[CONFIG.shieldRadius * 1.35, 0.08, 16, 64]} />
-        <primitive object={ring2Material} attach="material" />
+      <mesh ref={ring2Ref} rotation={[Math.PI / 4, 0, 0]}>
+        <torusGeometry args={[CONFIG.shieldRadius * 1.28, 0.1, 16, 64]} />
+        <meshStandardMaterial
+          color="#e91e63"
+          metalness={0.85}
+          roughness={0.2}
+          emissive="#c2185b"
+          emissiveIntensity={0.3}
+        />
       </mesh>
 
+      <mesh ref={ring3Ref} rotation={[-Math.PI / 4, Math.PI / 3, 0]}>
+        <torusGeometry args={[CONFIG.shieldRadius * 1.36, 0.08, 16, 64]} />
+        <meshStandardMaterial
+          color="#ffd700"
+          metalness={0.92}
+          roughness={0.15}
+        />
+      </mesh>
+
+      {/* 4. Swirling High-Contrast Light Particles */}
       <points ref={particlesRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -204,11 +178,10 @@ export function ShieldOrb() {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.28}
+          size={0.42}
           vertexColors
           transparent
-          opacity={0}
-          blending={THREE.AdditiveBlending}
+          opacity={0.92}
           sizeAttenuation
         />
       </points>

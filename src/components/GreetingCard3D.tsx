@@ -12,9 +12,9 @@ function createCoverTexture(): THREE.CanvasTexture {
 
   // Royal Crimson Velvet Gradient
   const grad = ctx.createLinearGradient(0, 0, 1024, 720);
-  grad.addColorStop(0, '#a00037');
-  grad.addColorStop(0.3, '#d81b60');
-  grad.addColorStop(0.7, '#880e4f');
+  grad.addColorStop(0, '#880e4f');
+  grad.addColorStop(0.3, '#c2185b');
+  grad.addColorStop(0.7, '#ad1457');
   grad.addColorStop(1, '#4a0026');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 1024, 720);
@@ -58,45 +58,46 @@ function createCoverTexture(): THREE.CanvasTexture {
   // Wax Seal Embossed Badge
   ctx.save();
   ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-  ctx.shadowBlur = 24;
-  ctx.shadowOffsetY = 8;
-  ctx.beginPath();
-  ctx.arc(512, 360, 120, 0, Math.PI * 2);
-  const sealGrad = ctx.createRadialGradient(480, 320, 10, 512, 360, 120);
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetY = 6;
+
+  const sealGrad = ctx.createRadialGradient(512, 360, 15, 512, 360, 80);
   sealGrad.addColorStop(0, '#ffd54f');
-  sealGrad.addColorStop(0.7, '#ff8f00');
-  sealGrad.addColorStop(1, '#c43e00');
+  sealGrad.addColorStop(0.6, '#ffb300');
+  sealGrad.addColorStop(1, '#c67c00');
   ctx.fillStyle = sealGrad;
-  ctx.fill();
-  ctx.lineWidth = 6;
-  ctx.strokeStyle = '#ffffff';
-  ctx.stroke();
-  ctx.restore();
-
-  // Seal Ring Engraving
   ctx.beginPath();
-  ctx.arc(512, 360, 100, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-  ctx.lineWidth = 2;
+  ctx.arc(512, 360, 78, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = '#fff8e1';
   ctx.stroke();
 
+  // Seal Emblem
   ctx.textAlign = 'center';
   ctx.fillStyle = '#4a0026';
-  ctx.font = 'bold 56px "Playfair Display", serif';
-  ctx.fillText('20/10', 512, 365);
+  ctx.font = 'bold 36px serif';
+  ctx.fillText('20•10', 512, 355);
 
-  ctx.fillStyle = '#880e4f';
-  ctx.font = 'bold 20px "Be Vietnam Pro", sans-serif';
-  ctx.fillText('VIỆT NAM', 512, 405);
+  ctx.font = '28px sans-serif';
+  ctx.fillText('👑', 512, 395);
+  ctx.restore();
 
-  // Envelope Header
-  ctx.fillStyle = '#fff0f5';
-  ctx.font = 'bold 36px "Be Vietnam Pro", sans-serif';
-  ctx.fillText('🌸 THIỆP CHÚC MỪNG HOÀNG GIA 🌸', 512, 120);
+  // Header Calligraphy
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fff8e7';
+  ctx.font = 'bold 44px "Playfair Display", serif';
+  ctx.fillText('THIỆP CHÚC MỪNG 20/10', 512, 130);
 
-  ctx.fillStyle = 'rgba(255, 235, 240, 0.85)';
-  ctx.font = 'italic 24px "Playfair Display", serif';
-  ctx.fillText('Gửi trọn yêu thương & ngàn lời chúc tốt đẹp nhất', 512, 160);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '24px sans-serif';
+  ctx.fillText('✦ NGÀY PHỤ NỮ VIỆT NAM ✦', 512, 180);
+
+  // Footer Instructions
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.font = 'italic 24px sans-serif';
+  ctx.fillText('Chụp 2 bàn tay hoặc nhấn nút để mở thiệp', 512, 630);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.generateMipmaps = true;
@@ -106,18 +107,18 @@ function createCoverTexture(): THREE.CanvasTexture {
   return texture;
 }
 
-// Helper: High-Res Royal Letter Texture (1024 x 1120)
+// Helper: High-Res Inner Letter Texture (1024 x 1120)
 function createLetterTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 1024;
   canvas.height = 1120;
   const ctx = canvas.getContext('2d')!;
 
-  // Warm Ivory Parchment with Soft Vignette
+  // Pearlescent Cream White Background
   const grad = ctx.createLinearGradient(0, 0, 1024, 1120);
-  grad.addColorStop(0, '#fffbf2');
-  grad.addColorStop(0.5, '#fff6e5');
-  grad.addColorStop(1, '#faebd7');
+  grad.addColorStop(0, '#ffffff');
+  grad.addColorStop(0.5, '#fff9fb');
+  grad.addColorStop(1, '#fcedf3');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 1024, 1120);
 
@@ -138,7 +139,7 @@ function createLetterTexture(): THREE.CanvasTexture {
 
   // Title 1
   ctx.fillStyle = '#880e4f';
-  ctx.font = 'bold 52px "Be Vietnam Pro", sans-serif';
+  ctx.font = 'bold 50px "Be Vietnam Pro", sans-serif';
   ctx.fillText('CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM', 512, 195);
 
   ctx.fillStyle = '#d81b60';
@@ -218,9 +219,9 @@ export function GreetingCard3D() {
     };
   }, [coverTex, letterTex]);
 
-  // Floating Petals & Sparkles
+  // Floating Petals & Sparkles with rich NormalBlending
   const [petalPositions, petalColors] = useMemo(() => {
-    const count = 400;
+    const count = 350;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -230,17 +231,17 @@ export function GreetingCard3D() {
 
       const r = Math.random();
       if (r < 0.5) {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.2;
-        col[i * 3 + 2] = 0.55; // Crimson rose
+        col[i * 3] = 0.92;
+        col[i * 3 + 1] = 0.12;
+        col[i * 3 + 2] = 0.45; // Crimson rose
       } else if (r < 0.8) {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.84;
-        col[i * 3 + 2] = 0.2; // Gold
+        col[i * 3] = 0.98;
+        col[i * 3 + 1] = 0.72;
+        col[i * 3 + 2] = 0.1; // Gold
       } else {
-        col[i * 3] = 0.2;
-        col[i * 3 + 1] = 1.0;
-        col[i * 3 + 2] = 0.7; // Cyan sparkle
+        col[i * 3] = 0.82;
+        col[i * 3 + 1] = 0.05;
+        col[i * 3 + 2] = 0.35; // Deep ruby
       }
     }
     return [pos, col];
@@ -344,11 +345,11 @@ export function GreetingCard3D() {
       <group ref={heartsGroupRef} visible={false}>
         {[-3.5, -1.8, 0, 1.8, 3.5].map((x, i) => (
           <mesh key={i} position={[x, 5, 1]}>
-            <octahedronGeometry args={[0.45]} />
-            <meshBasicMaterial
-              color={i % 2 === 0 ? '#ff1493' : '#ffd700'}
-              wireframe={false}
-              blending={THREE.AdditiveBlending}
+            <octahedronGeometry args={[0.5]} />
+            <meshStandardMaterial
+              color={i % 2 === 0 ? '#d81b60' : '#ffb300'}
+              metalness={0.8}
+              roughness={0.2}
             />
           </mesh>
         ))}
@@ -361,11 +362,11 @@ export function GreetingCard3D() {
           <bufferAttribute attach="attributes-color" args={[petalColors, 3]} />
         </bufferGeometry>
         <pointsMaterial
-          size={0.34}
+          size={0.4}
           vertexColors
           transparent
           opacity={0}
-          blending={THREE.AdditiveBlending}
+          sizeAttenuation
         />
       </points>
     </group>

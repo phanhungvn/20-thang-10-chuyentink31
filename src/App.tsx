@@ -893,27 +893,27 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
       <div
         style={{
           width: '100%',
-          background: 'rgba(255, 255, 255, 0.96)',
-          border: '2px solid #ffd700',
+          background: 'rgba(255, 255, 255, 0.97)',
+          border: '2.5px solid #ffd700',
           borderRadius: '32px',
-          padding: '24px 28px',
+          padding: '24px 30px',
           backdropFilter: 'blur(30px)',
-          boxShadow: '0 20px 60px rgba(216, 27, 96, 0.2), 0 0 35px rgba(255, 215, 0, 0.3)',
+          boxShadow: '0 25px 70px rgba(216, 27, 96, 0.22), 0 0 40px rgba(255, 215, 0, 0.35)',
           display: 'flex',
           alignItems: 'center',
-          gap: '28px',
+          gap: '30px',
           transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-        {/* BÊN TRÁI: ẢNH PHÓNG TO TRANG TRỌNG (Gold Framed Portrait) */}
+        {/* BÊN TRÁI: ẢNH PHÓNG TO TRANG TRỌNG (Grand Gold Framed Portrait) */}
         <div
           style={{
-            width: '230px',
-            height: '290px',
-            borderRadius: '24px',
-            background: 'linear-gradient(135deg, #fff0f5 0%, #ffe4ec 50%, #ffd1dc 100%)',
-            border: '3px solid #ffd700',
-            boxShadow: '0 10px 30px rgba(216, 27, 96, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.4)',
+            width: '260px',
+            height: '330px',
+            borderRadius: '26px',
+            background: 'linear-gradient(135deg, #ffffff 0%, #fff0f5 50%, #ffe4ec 100%)',
+            border: '3.5px solid #ffd700',
+            boxShadow: '0 12px 36px rgba(216, 27, 96, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.45)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -932,27 +932,53 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
               alignItems: 'center',
               gap: '6px',
               background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
-              padding: '3px 12px',
+              padding: '4px 14px',
               borderRadius: '20px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              border: '1px solid #fff',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.18)',
+              border: '1.5px solid #fff',
             }}
           >
-            <span style={{ fontSize: '13px' }}>👑</span>
-            <span style={{ fontSize: '10.5px', fontWeight: '900', color: '#4a0026' }}>
+            <span style={{ fontSize: '14px' }}>👑</span>
+            <span style={{ fontSize: '11px', fontWeight: '900', color: '#4a0026', letterSpacing: '0.5px' }}>
               ẢNH {current.id} / 9
             </span>
           </div>
 
           {/* Central Portrait Emblem */}
-          <div style={{ fontSize: '64px', margin: '14px 0 6px 0', filter: 'drop-shadow(0 4px 10px rgba(216, 27, 96, 0.3))' }}>
-            👸🏻
+          <div
+            style={{
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #ffd700 0%, #ff4081 50%, #e91e63 100%)',
+              padding: '4px',
+              boxShadow: '0 8px 24px rgba(233, 30, 99, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '18px 0 10px 0',
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                background: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '62px',
+              }}
+            >
+              👸🏻
+            </div>
           </div>
 
           <div
             style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '24px',
+              fontSize: '26px',
               fontWeight: '900',
               color: '#880e4f',
               letterSpacing: '0.5px',
@@ -961,8 +987,8 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
             {current.label}
           </div>
 
-          <div style={{ fontSize: '11px', color: '#c2185b', fontWeight: 'bold', marginTop: '2px' }}>
-            NỮ THẦN TỎA SÁNG
+          <div style={{ fontSize: '11.5px', color: '#c2185b', fontWeight: 'bold', marginTop: '2px', letterSpacing: '0.5px' }}>
+            ✨ NỮ THẦN TỎA SÁNG ✨
           </div>
 
           {/* Bottom Badge */}
@@ -970,13 +996,14 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
             style={{
               position: 'absolute',
               bottom: '12px',
-              background: 'rgba(255, 255, 255, 0.9)',
-              border: '1px solid #ff80ab',
-              padding: '4px 14px',
-              borderRadius: '14px',
-              fontSize: '10.5px',
+              background: 'rgba(255, 255, 255, 0.95)',
+              border: '1.5px solid #ff80ab',
+              padding: '4px 16px',
+              borderRadius: '16px',
+              fontSize: '11px',
               fontWeight: 'bold',
               color: '#ad1457',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
             }}
           >
             ★ 20 • 10 • 2026 ★
@@ -986,22 +1013,22 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
         {/* BÊN PHẢI: TÊN VÀ MÔ TẢ TO LÊN CHUYÊN NGHIỆP & VIP */}
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* Chức Danh / Danh Hiệu VIP */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <span
               style={{
-                fontSize: '12px',
+                fontSize: '12.5px',
                 fontWeight: '900',
                 color: '#fff',
                 background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)',
-                padding: '4px 14px',
-                borderRadius: '16px',
-                boxShadow: '0 3px 10px rgba(216, 27, 96, 0.35)',
-                border: '1px solid #ffd700',
+                padding: '5px 16px',
+                borderRadius: '18px',
+                boxShadow: '0 3px 12px rgba(216, 27, 96, 0.35)',
+                border: '1.5px solid #ffd700',
               }}
             >
               👑 {current.role}
             </span>
-            <span style={{ fontSize: '11.5px', color: '#ffb300', fontWeight: 'bold' }}>
+            <span style={{ fontSize: '13px', color: '#ffb300', fontWeight: 'bold' }}>
               ★★★★★
             </span>
           </div>
@@ -1010,10 +1037,10 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
           <h1
             style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '34px',
+              fontSize: '38px',
               fontWeight: '900',
               color: '#880e4f',
-              margin: '0 0 12px 0',
+              margin: '0 0 10px 0',
               lineHeight: '1.2',
               textShadow: '0 2px 8px rgba(216, 27, 96, 0.1)',
             }}
@@ -1024,14 +1051,14 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
           {/* LỜI CHÚC TRÂN QUÝ (Khổ to, trang trọng) */}
           <div
             style={{
-              fontSize: '15px',
+              fontSize: '16px',
               color: '#37474f',
-              lineHeight: '1.65',
+              lineHeight: '1.7',
               fontStyle: 'italic',
-              background: 'rgba(255, 240, 245, 0.7)',
-              padding: '12px 18px',
-              borderRadius: '18px',
-              borderLeft: '4px solid #d81b60',
+              background: 'rgba(255, 240, 245, 0.85)',
+              padding: '14px 20px',
+              borderRadius: '20px',
+              borderLeft: '5px solid #d81b60',
               marginBottom: '16px',
             }}
           >
@@ -1470,6 +1497,9 @@ function WebcamView({ onReady }: { onReady: (ready: boolean) => void }) {
 // 11. Main Application Root
 // ==========================================
 export default function App() {
+  if (typeof window !== 'undefined') {
+    (window as any).__handStore = useHandStore;
+  }
   const [hasCamera, setHasCamera] = useState(false);
   const [burstCount, setBurstCount] = useState(0);
   const hasStarted = useHandStore((state) => state.hasStarted);
