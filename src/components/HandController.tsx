@@ -7,6 +7,7 @@ import {
   globalLandmarker,
   analyzeGestures,
 } from '../services/HandTrackingService';
+import { sounds } from '../services/SoundService';
 
 let lastVideoTime = -1;
 
@@ -149,6 +150,7 @@ export function HandController() {
               if (pendingFistTime.current === 0) pendingFistTime.current = now;
               else if (now - pendingFistTime.current > 0.3 && stage !== 'FIST_ORB') {
                 useHandStore.getState().setStage('FIST_ORB');
+                sounds.playOrbHum();
               }
             } else {
               pendingFistTime.current = 0;
@@ -159,6 +161,7 @@ export function HandController() {
               if (pendingPalmTime.current === 0) pendingPalmTime.current = now;
               else if (now - pendingPalmTime.current > 0.35) {
                 useHandStore.getState().setStage('GALLERY');
+                sounds.playWhoosh();
               }
             } else if (stage !== 'FIST_ORB') {
               pendingPalmTime.current = 0;
@@ -177,12 +180,17 @@ export function HandController() {
                   // Nếu đang ở ảnh 9 (người cuối cùng), lướt tiếp sẽ tự động chuyển sang Thiệp 20/10!
                   if (currentIdx === 8) {
                     useHandStore.getState().setStage('CARD');
+                    sounds.playChime(1.5);
                   } else {
                     useHandStore.getState().nextPhoto();
+                    sounds.playChime(1.0 + (currentIdx * 0.08));
+                    sounds.playWhoosh();
                   }
                   lastSwipeTime.current = now;
                 } else if (isFlickRight && (now - lastSwipeTime.current > 0.55)) {
                   useHandStore.getState().prevPhoto();
+                  sounds.playChime(0.9);
+                  sounds.playWhoosh();
                   lastSwipeTime.current = now;
                 }
               }
@@ -193,6 +201,7 @@ export function HandController() {
                 if (pendingVTime.current === 0) pendingVTime.current = now;
                 else if (now - pendingVTime.current > 0.25) {
                   useHandStore.getState().setStage('CARD');
+                  sounds.playChime(1.5);
                   pendingVTime.current = 0;
                 }
               } else {
@@ -221,6 +230,7 @@ export function HandController() {
 
                   if (width > 0.16 && height > 0.12 && closeDist < 0.12) {
                     useHandStore.getState().setStage('CARD');
+                    sounds.playChime(1.5);
                     indexStrokeHistory.current = [];
                     lastGestureChangeTime.current = now;
                   }
@@ -234,6 +244,7 @@ export function HandController() {
             if (stage === 'CARD') {
               if (isTwoHandsClap && !useHandStore.getState().isCardOpened) {
                 useHandStore.getState().setCardOpened(true);
+                sounds.playCelebrationFanfare();
               }
             }
           }

@@ -3,98 +3,197 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useHandStore } from '../store';
 
-// Helper: Create texture for card cover and inner letter
+// Helper: High-Res Envelope Cover Texture (1024 x 720)
 function createCoverTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 360;
+  canvas.width = 1024;
+  canvas.height = 720;
   const ctx = canvas.getContext('2d')!;
 
-  const grad = ctx.createLinearGradient(0, 0, 512, 360);
-  grad.addColorStop(0, '#d91e63');
-  grad.addColorStop(0.5, '#c2185b');
-  grad.addColorStop(1, '#880e4f');
+  // Royal Crimson Velvet Gradient
+  const grad = ctx.createLinearGradient(0, 0, 1024, 720);
+  grad.addColorStop(0, '#a00037');
+  grad.addColorStop(0.3, '#d81b60');
+  grad.addColorStop(0.7, '#880e4f');
+  grad.addColorStop(1, '#4a0026');
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 512, 360);
+  ctx.fillRect(0, 0, 1024, 720);
 
-  // Gold border
-  ctx.lineWidth = 12;
+  // Radial highlight
+  const radGlow = ctx.createRadialGradient(512, 360, 50, 512, 360, 480);
+  radGlow.addColorStop(0, 'rgba(255, 182, 193, 0.28)');
+  radGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = radGlow;
+  ctx.fillRect(0, 0, 1024, 720);
+
+  // Gold Foil Borders
+  ctx.lineWidth = 18;
   ctx.strokeStyle = '#ffd700';
-  ctx.strokeRect(10, 10, 492, 340);
+  ctx.strokeRect(18, 18, 988, 684);
 
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-  ctx.strokeRect(22, 22, 468, 316);
-
-  // Golden Ribbon
-  ctx.fillStyle = '#ffd700';
-  ctx.fillRect(240, 10, 32, 340);
-
-  // Seal in center
-  ctx.beginPath();
-  ctx.arc(256, 180, 72, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffb300';
-  ctx.fill();
   ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.strokeRect(38, 38, 948, 644);
+
+  // Vertical Golden Ribbon with Embroidery Pattern
+  const ribbonGrad = ctx.createLinearGradient(480, 0, 544, 0);
+  ribbonGrad.addColorStop(0, '#e6b800');
+  ribbonGrad.addColorStop(0.5, '#fff176');
+  ribbonGrad.addColorStop(1, '#e6b800');
+  ctx.fillStyle = ribbonGrad;
+  ctx.fillRect(480, 18, 64, 684);
+
+  // Golden Ribbon Stitching
+  ctx.strokeStyle = '#880e4f';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 8]);
+  ctx.beginPath();
+  ctx.moveTo(486, 18);
+  ctx.lineTo(486, 702);
+  ctx.moveTo(538, 18);
+  ctx.lineTo(538, 702);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Wax Seal Embossed Badge
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+  ctx.shadowBlur = 24;
+  ctx.shadowOffsetY = 8;
+  ctx.beginPath();
+  ctx.arc(512, 360, 120, 0, Math.PI * 2);
+  const sealGrad = ctx.createRadialGradient(480, 320, 10, 512, 360, 120);
+  sealGrad.addColorStop(0, '#ffd54f');
+  sealGrad.addColorStop(0.7, '#ff8f00');
+  sealGrad.addColorStop(1, '#c43e00');
+  ctx.fillStyle = sealGrad;
+  ctx.fill();
+  ctx.lineWidth = 6;
   ctx.strokeStyle = '#ffffff';
+  ctx.stroke();
+  ctx.restore();
+
+  // Seal Ring Engraving
+  ctx.beginPath();
+  ctx.arc(512, 360, 100, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.lineWidth = 2;
   ctx.stroke();
 
   ctx.textAlign = 'center';
+  ctx.fillStyle = '#4a0026';
+  ctx.font = 'bold 56px "Playfair Display", serif';
+  ctx.fillText('20/10', 512, 365);
+
   ctx.fillStyle = '#880e4f';
-  ctx.font = 'bold 36px sans-serif';
-  ctx.fillText('20-10', 256, 188);
+  ctx.font = 'bold 20px "Be Vietnam Pro", sans-serif';
+  ctx.fillText('VIỆT NAM', 512, 405);
 
-  ctx.font = 'bold 12px sans-serif';
-  ctx.fillText('VIETNAM', 256, 210);
+  // Envelope Header
+  ctx.fillStyle = '#fff0f5';
+  ctx.font = 'bold 36px "Be Vietnam Pro", sans-serif';
+  ctx.fillText('🌸 THIỆP CHÚC MỪNG HOÀNG GIA 🌸', 512, 120);
 
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 20px sans-serif';
-  ctx.fillText('THIỆP CHÚC MỪNG', 256, 68);
+  ctx.fillStyle = 'rgba(255, 235, 240, 0.85)';
+  ctx.font = 'italic 24px "Playfair Display", serif';
+  ctx.fillText('Gửi trọn yêu thương & ngàn lời chúc tốt đẹp nhất', 512, 160);
 
   const texture = new THREE.CanvasTexture(canvas);
+  texture.generateMipmaps = true;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
   return texture;
 }
 
+// Helper: High-Res Royal Letter Texture (1024 x 1120)
 function createLetterTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 560;
+  canvas.width = 1024;
+  canvas.height = 1120;
   const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = '#fff9f0';
-  ctx.fillRect(0, 0, 512, 560);
+  // Warm Ivory Parchment with Soft Vignette
+  const grad = ctx.createLinearGradient(0, 0, 1024, 1120);
+  grad.addColorStop(0, '#fffbf2');
+  grad.addColorStop(0.5, '#fff6e5');
+  grad.addColorStop(1, '#faebd7');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1024, 1120);
 
-  ctx.lineWidth = 8;
-  ctx.strokeStyle = '#e91e63';
-  ctx.strokeRect(8, 8, 496, 544);
+  // Double Border: Magenta & Gold
+  ctx.lineWidth = 14;
+  ctx.strokeStyle = '#c2185b';
+  ctx.strokeRect(16, 16, 992, 1088);
 
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 4;
   ctx.strokeStyle = '#ffd700';
-  ctx.strokeRect(18, 18, 476, 524);
+  ctx.strokeRect(36, 36, 952, 1048);
 
+  // Decorative header flourish
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#d81b60';
-  ctx.font = 'bold 28px sans-serif';
-  ctx.fillText('🌸 CHÚC MỪNG 20/10 🌸', 256, 70);
-
-  ctx.font = 'italic bold 20px sans-serif';
-  ctx.fillStyle = '#ad1457';
-  ctx.fillText('Happy Vietnamese Women\'s Day', 256, 110);
-
-  ctx.fillStyle = '#37474f';
-  ctx.font = '19px sans-serif';
-  ctx.fillText('Nhân ngày Phụ Nữ Việt Nam 20/10,', 256, 180);
-  ctx.fillText('Kính chúc một nửa thế giới luôn rạng ngời,', 256, 220);
-  ctx.fillText('Xinh đẹp như những đóa hoa thơm ngát,', 256, 260);
-  ctx.fillText('Hạnh phúc viên mãn, vạn sự như ý', 256, 300);
-  ctx.fillText('và luôn được yêu thương mỗi phút giây!', 256, 340);
-
   ctx.fillStyle = '#e91e63';
-  ctx.font = 'italic 22px sans-serif';
-  ctx.fillText('💖 Thân tặng những người phụ nữ tuyệt vời 💖', 256, 420);
+  ctx.font = '54px sans-serif';
+  ctx.fillText('🌸 💖 👑 💖 🌸', 512, 120);
+
+  // Title 1
+  ctx.fillStyle = '#880e4f';
+  ctx.font = 'bold 52px "Be Vietnam Pro", sans-serif';
+  ctx.fillText('CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM', 512, 195);
+
+  ctx.fillStyle = '#d81b60';
+  ctx.font = 'bold 44px "Playfair Display", serif';
+  ctx.fillText('20 THÁNG 10', 512, 255);
+
+  // Divider line
+  ctx.strokeStyle = '#ffb300';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(250, 285);
+  ctx.lineTo(774, 285);
+  ctx.stroke();
+
+  // Subtitle
+  ctx.fillStyle = '#ad1457';
+  ctx.font = 'italic bold 30px "Playfair Display", serif';
+  ctx.fillText('Happy Vietnamese Women\'s Day', 512, 335);
+
+  // Letter Body Poem & Message
+  ctx.fillStyle = '#263238';
+  ctx.font = '32px "Be Vietnam Pro", sans-serif';
+
+  const lines = [
+    'Nhân ngày tôn vinh phái đẹp 20/10,',
+    'Xin gửi đến toàn thể các chị, các em ngàn đóa hoa tươi thắm,',
+    'Chúc một nửa thế giới luôn xinh đẹp rạng ngời,',
+    'Tràn đầy tự tin, hạnh phúc viên mãn,',
+    'Gặt hái nhiều thành công rực rỡ trong sự nghiệp,',
+    'Và luôn là nguồn cảm hứng ấm áp, diệu kỳ nhất!',
+  ];
+
+  let startY = 440;
+  lines.forEach((line) => {
+    ctx.fillText(line, 512, startY);
+    startY += 62;
+  });
+
+  // Footer Signature
+  ctx.fillStyle = '#c2185b';
+  ctx.font = 'italic bold 36px "Playfair Display", serif';
+  ctx.fillText('💖 Thân tặng những người phụ nữ tuyệt vời nhất! 💖', 512, 900);
+
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '38px sans-serif';
+  ctx.fillText('✨ ★ ★ ★ ★ ★ ✨', 512, 970);
+
+  ctx.fillStyle = '#78909c';
+  ctx.font = '22px monospace';
+  ctx.fillText('HOCENG • 20/10/2026', 512, 1030);
 
   const texture = new THREE.CanvasTexture(canvas);
+  texture.generateMipmaps = true;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
   return texture;
 }
@@ -104,6 +203,7 @@ export function GreetingCard3D() {
   const flapRef = useRef<THREE.Mesh>(null);
   const letterRef = useRef<THREE.Mesh>(null);
   const petalsRef = useRef<THREE.Points>(null);
+  const heartsGroupRef = useRef<THREE.Group>(null);
 
   const stage = useHandStore((state) => state.stage);
   const isCardOpened = useHandStore((state) => state.isCardOpened);
@@ -118,25 +218,29 @@ export function GreetingCard3D() {
     };
   }, [coverTex, letterTex]);
 
-  // Petals particle system
+  // Floating Petals & Sparkles
   const [petalPositions, petalColors] = useMemo(() => {
-    const count = 300;
+    const count = 400;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 35;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 25;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 25;
+      pos[i * 3] = (Math.random() - 0.5) * 45;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 35;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 35;
 
       const r = Math.random();
-      if (r < 0.6) {
+      if (r < 0.5) {
         col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.3;
-        col[i * 3 + 2] = 0.6; // Rose pink
+        col[i * 3 + 1] = 0.2;
+        col[i * 3 + 2] = 0.55; // Crimson rose
+      } else if (r < 0.8) {
+        col[i * 3] = 1.0;
+        col[i * 3 + 1] = 0.84;
+        col[i * 3 + 2] = 0.2; // Gold
       } else {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.85;
-        col[i * 3 + 2] = 0.2; // Gold sparkle
+        col[i * 3] = 0.2;
+        col[i * 3 + 1] = 1.0;
+        col[i * 3 + 2] = 0.7; // Cyan sparkle
       }
     }
     return [pos, col];
@@ -156,12 +260,12 @@ export function GreetingCard3D() {
     const time = clock.getElapsedTime();
 
     // Floating animation
-    groupRef.current.position.y = 1.5 + Math.sin(time * 2) * 0.4;
-    groupRef.current.rotation.y = Math.sin(time * 0.6) * 0.12;
+    groupRef.current.position.y = 1.5 + Math.sin(time * 2) * 0.45;
+    groupRef.current.rotation.y = Math.sin(time * 0.7) * 0.12;
 
     // Flap opening animation
     if (flapRef.current) {
-      const targetFlapRot = isCardOpened ? -Math.PI * 0.85 : 0;
+      const targetFlapRot = isCardOpened ? -Math.PI * 0.88 : 0;
       flapRef.current.rotation.x = THREE.MathUtils.lerp(
         flapRef.current.rotation.x,
         targetFlapRot,
@@ -171,31 +275,43 @@ export function GreetingCard3D() {
 
     // Letter slide-out animation
     if (letterRef.current) {
-      const targetLetterY = isCardOpened ? 4.2 : 0;
-      const targetLetterZ = isCardOpened ? 0.3 : 0.02;
+      const targetLetterY = isCardOpened ? 4.5 : 0;
+      const targetLetterZ = isCardOpened ? 0.35 : 0.02;
       letterRef.current.position.y = THREE.MathUtils.lerp(
         letterRef.current.position.y,
         targetLetterY,
-        0.06
+        0.07
       );
       letterRef.current.position.z = THREE.MathUtils.lerp(
         letterRef.current.position.z,
         targetLetterZ,
-        0.06
+        0.07
       );
+    }
+
+    // Floating hearts animation when opened
+    if (heartsGroupRef.current) {
+      heartsGroupRef.current.visible = isCardOpened;
+      if (isCardOpened) {
+        heartsGroupRef.current.children.forEach((child, i) => {
+          child.position.y = (Math.sin(time * 1.5 + i * 1.2) * 2) + 6;
+          child.rotation.y = time * 2 + i;
+          child.rotation.z = Math.sin(time + i) * 0.3;
+        });
+      }
     }
 
     // Petals burst animation
     if (petalsRef.current) {
       const pMat = petalsRef.current.material as THREE.PointsMaterial;
-      pMat.opacity = THREE.MathUtils.lerp(pMat.opacity, isCardOpened ? 0.9 : 0, 0.08);
+      pMat.opacity = THREE.MathUtils.lerp(pMat.opacity, isCardOpened ? 0.95 : 0, 0.08);
 
       if (isCardOpened) {
         const arr = petalsRef.current.geometry.attributes.position.array as Float32Array;
         for (let i = 0; i < arr.length / 3; i++) {
-          arr[i * 3 + 1] += Math.sin(time + i) * 0.03 + 0.02;
-          arr[i * 3] += Math.cos(time * 0.8 + i) * 0.02;
-          if (arr[i * 3 + 1] > 20) arr[i * 3 + 1] = -15;
+          arr[i * 3 + 1] += Math.sin(time + i) * 0.04 + 0.03;
+          arr[i * 3] += Math.cos(time * 0.8 + i) * 0.025;
+          if (arr[i * 3 + 1] > 24) arr[i * 3 + 1] = -18;
         }
         petalsRef.current.geometry.attributes.position.needsUpdate = true;
       }
@@ -224,6 +340,20 @@ export function GreetingCard3D() {
         <meshBasicMaterial map={letterTex} side={THREE.DoubleSide} />
       </mesh>
 
+      {/* 3D Floating Hearts when opened */}
+      <group ref={heartsGroupRef} visible={false}>
+        {[-3.5, -1.8, 0, 1.8, 3.5].map((x, i) => (
+          <mesh key={i} position={[x, 5, 1]}>
+            <octahedronGeometry args={[0.45]} />
+            <meshBasicMaterial
+              color={i % 2 === 0 ? '#ff1493' : '#ffd700'}
+              wireframe={false}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        ))}
+      </group>
+
       {/* Floating Petals / Sparkles */}
       <points ref={petalsRef}>
         <bufferGeometry>
@@ -231,7 +361,7 @@ export function GreetingCard3D() {
           <bufferAttribute attach="attributes-color" args={[petalColors, 3]} />
         </bufferGeometry>
         <pointsMaterial
-          size={0.32}
+          size={0.34}
           vertexColors
           transparent
           opacity={0}

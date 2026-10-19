@@ -7,10 +7,12 @@ export function ShieldOrb() {
   const stage = useHandStore((state) => state.stage);
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
   const particlesRef = useRef<THREE.Points>(null);
 
   const [particlePositions, particleColors] = useMemo(() => {
-    const count = 500;
+    const count = 650;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const radius = CONFIG.shieldRadius * 1.05;
@@ -24,14 +26,18 @@ export function ShieldOrb() {
       pos[i * 3 + 2] = radius * Math.cos(phi);
 
       const ratio = Math.random();
-      if (ratio > 0.5) {
+      if (ratio > 0.6) {
         col[i * 3] = 0.0;
         col[i * 3 + 1] = 1.0;
-        col[i * 3 + 2] = 0.6;
-      } else {
+        col[i * 3 + 2] = 0.65; // Cyan neon
+      } else if (ratio > 0.3) {
         col[i * 3] = 1.0;
         col[i * 3 + 1] = 0.4;
-        col[i * 3 + 2] = 0.7;
+        col[i * 3 + 2] = 0.8; // Pink neon
+      } else {
+        col[i * 3] = 1.0;
+        col[i * 3 + 1] = 0.88;
+        col[i * 3 + 2] = 0.2; // Gold
       }
     }
     return [pos, col];
@@ -46,24 +52,33 @@ export function ShieldOrb() {
     const shouldShow = stage === 'FIST_ORB';
 
     if (meshRef.current && glowRef.current && particlesRef.current) {
-      const targetOpacity = shouldShow ? 0.45 : 0;
+      const targetOpacity = shouldShow ? 0.55 : 0;
       const currentOpacity = (
         meshRef.current.material as THREE.MeshBasicMaterial
       ).opacity;
       const newOpacity = THREE.MathUtils.lerp(
         currentOpacity,
         targetOpacity,
-        0.1
+        0.12
       );
 
       (meshRef.current.material as THREE.MeshBasicMaterial).opacity = newOpacity;
       (glowRef.current.material as THREE.MeshBasicMaterial).opacity = newOpacity * 0.4;
-      (particlesRef.current.material as THREE.PointsMaterial).opacity = shouldShow ? 0.9 : 0;
+      (particlesRef.current.material as THREE.PointsMaterial).opacity = shouldShow ? 0.95 : 0;
+
+      if (ring1Ref.current) {
+        (ring1Ref.current.material as THREE.MeshBasicMaterial).opacity = newOpacity * 0.7;
+      }
+      if (ring2Ref.current) {
+        (ring2Ref.current.material as THREE.MeshBasicMaterial).opacity = newOpacity * 0.7;
+      }
 
       const isVis = newOpacity > 0.01;
       meshRef.current.visible = isVis;
       glowRef.current.visible = isVis;
       particlesRef.current.visible = isVis;
+      if (ring1Ref.current) ring1Ref.current.visible = isVis;
+      if (ring2Ref.current) ring2Ref.current.visible = isVis;
 
       const currentPos = isTracking
         ? targetPosition
@@ -76,16 +91,29 @@ export function ShieldOrb() {
       meshRef.current.position.lerp(currentPos, 0.12);
       glowRef.current.position.lerp(currentPos, 0.12);
       particlesRef.current.position.lerp(currentPos, 0.12);
+      if (ring1Ref.current) ring1Ref.current.position.lerp(currentPos, 0.12);
+      if (ring2Ref.current) ring2Ref.current.position.lerp(currentPos, 0.12);
 
-      const breathe = 1 + Math.sin(time * 3) * 0.04;
+      const breathe = 1 + Math.sin(time * 3) * 0.05;
       meshRef.current.scale.setScalar(breathe);
       glowRef.current.scale.setScalar(breathe * 1.15);
       particlesRef.current.scale.setScalar(breathe * 1.08);
 
-      meshRef.current.rotation.y = time * 0.5;
-      meshRef.current.rotation.x = time * 0.25;
-      particlesRef.current.rotation.y = -time * 0.7;
-      particlesRef.current.rotation.z = time * 0.3;
+      meshRef.current.rotation.y = time * 0.6;
+      meshRef.current.rotation.x = time * 0.3;
+      particlesRef.current.rotation.y = -time * 0.8;
+      particlesRef.current.rotation.z = time * 0.4;
+
+      if (ring1Ref.current) {
+        ring1Ref.current.rotation.x = time * 0.9;
+        ring1Ref.current.rotation.y = time * 0.45;
+        ring1Ref.current.scale.setScalar(breathe * 1.3);
+      }
+      if (ring2Ref.current) {
+        ring2Ref.current.rotation.z = -time * 0.8;
+        ring2Ref.current.rotation.y = time * 0.5;
+        ring2Ref.current.scale.setScalar(breathe * 1.4);
+      }
     }
   });
 
@@ -114,6 +142,32 @@ export function ShieldOrb() {
     []
   );
 
+  const ring1Material = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: 0xffd700,
+        transparent: true,
+        opacity: 0,
+        wireframe: true,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+      }),
+    []
+  );
+
+  const ring2Material = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: 0x00ffcc,
+        transparent: true,
+        opacity: 0,
+        wireframe: true,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+      }),
+    []
+  );
+
   return (
     <group visible={stage === 'FIST_ORB'}>
       <mesh ref={meshRef}>
@@ -124,6 +178,18 @@ export function ShieldOrb() {
       <mesh ref={glowRef}>
         <sphereGeometry args={[CONFIG.shieldRadius * 1.15, 32, 32]} />
         <primitive object={glowMaterial} attach="material" />
+      </mesh>
+
+      {/* Rotating Magic Rune Ring 1 */}
+      <mesh ref={ring1Ref}>
+        <torusGeometry args={[CONFIG.shieldRadius * 1.25, 0.08, 16, 64]} />
+        <primitive object={ring1Material} attach="material" />
+      </mesh>
+
+      {/* Rotating Magic Rune Ring 2 */}
+      <mesh ref={ring2Ref}>
+        <torusGeometry args={[CONFIG.shieldRadius * 1.35, 0.08, 16, 64]} />
+        <primitive object={ring2Material} attach="material" />
       </mesh>
 
       <points ref={particlesRef}>
