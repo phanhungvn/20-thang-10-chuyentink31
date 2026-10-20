@@ -908,34 +908,52 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
         {/* BÊN TRÁI: ẢNH PHÓNG TO TRANG TRỌNG (Grand Gold Framed Portrait) */}
         <div
           style={{
-            width: '260px',
-            height: '330px',
+            width: '270px',
+            height: '340px',
             borderRadius: '26px',
             background: 'linear-gradient(135deg, #ffffff 0%, #fff0f5 50%, #ffe4ec 100%)',
             border: '3.5px solid #ffd700',
-            boxShadow: '0 12px 36px rgba(216, 27, 96, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.45)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
+            boxShadow: '0 14px 42px rgba(216, 27, 96, 0.3), 0 0 25px rgba(255, 215, 0, 0.45)',
             position: 'relative',
             overflow: 'hidden',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
+          {/* Ảnh chân dung thực tế sắc nét */}
+          {current.image ? (
+            <img
+              src={current.image}
+              alt={current.name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 15%',
+                display: 'block',
+              }}
+            />
+          ) : (
+            <div style={{ fontSize: '72px' }}>👸🏻</div>
+          )}
+
           {/* Top Crown Ribbon */}
           <div
             style={{
               position: 'absolute',
               top: '12px',
+              left: '12px',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
               padding: '4px 14px',
               borderRadius: '20px',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.18)',
+              boxShadow: '0 3px 12px rgba(0,0,0,0.3)',
               border: '1.5px solid #fff',
+              zIndex: 3,
             }}
           >
             <span style={{ fontSize: '14px' }}>👑</span>
@@ -944,69 +962,33 @@ function VipPersonaShowcase({ onCelebrate }: { onCelebrate: () => void }) {
             </span>
           </div>
 
-          {/* Central Portrait Emblem */}
+          {/* Bottom Gradient Overlay with Star Laurel */}
           <div
             style={{
-              width: '120px',
-              height: '120px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #ffd700 0%, #ff4081 50%, #e91e63 100%)',
-              padding: '4px',
-              boxShadow: '0 8px 24px rgba(233, 30, 99, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '18px 0 10px 0',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: 'linear-gradient(to top, rgba(74, 0, 38, 0.9) 0%, rgba(74, 0, 38, 0.35) 60%, transparent 100%)',
+              padding: '24px 12px 10px 12px',
+              textAlign: 'center',
+              zIndex: 2,
             }}
           >
             <div
               style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: '50%',
-                background: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '62px',
+                fontFamily: "'Playfair Display', serif",
+                fontSize: '17px',
+                fontWeight: '900',
+                color: '#ffffff',
+                textShadow: '0 2px 6px rgba(0,0,0,0.7)',
               }}
             >
-              👸🏻
+              {current.name}
             </div>
-          </div>
-
-          <div
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: '26px',
-              fontWeight: '900',
-              color: '#880e4f',
-              letterSpacing: '0.5px',
-            }}
-          >
-            {current.label}
-          </div>
-
-          <div style={{ fontSize: '11.5px', color: '#c2185b', fontWeight: 'bold', marginTop: '2px', letterSpacing: '0.5px' }}>
-            ✨ NỮ THẦN TỎA SÁNG ✨
-          </div>
-
-          {/* Bottom Badge */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '12px',
-              background: 'rgba(255, 255, 255, 0.95)',
-              border: '1.5px solid #ff80ab',
-              padding: '4px 16px',
-              borderRadius: '16px',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              color: '#ad1457',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            }}
-          >
-            ★ 20 • 10 • 2026 ★
+            <div style={{ fontSize: '11px', color: '#ffd700', fontWeight: 'bold', marginTop: '2px' }}>
+              ★ 20 • 10 • 2026 ★
+            </div>
           </div>
         </div>
 

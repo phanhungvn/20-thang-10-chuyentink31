@@ -86,22 +86,57 @@ function createCardTexture(profile: (typeof PERSON_PROFILES)[0]): THREE.CanvasTe
   ctx.roundRect(192, 170, 640, 600, 28);
   ctx.fill();
 
-  // Crown Emblem & Profile Label
-  ctx.font = '76px sans-serif';
-  ctx.fillText('👑', 512, 320);
+  // Draw Real Portrait Photo if available
+  if (profile.image) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const targetW = 640;
+      const targetH = 600;
+      const imgRatio = img.width / img.height;
+      const targetRatio = targetW / targetH;
+      let sWidth = img.width;
+      let sHeight = img.height;
+      let sx = 0;
+      let sy = 0;
 
-  ctx.fillStyle = '#880e4f';
-  ctx.font = 'bold 84px "Playfair Display", serif';
-  ctx.fillText(profile.label, 512, 450);
+      if (imgRatio > targetRatio) {
+        sHeight = img.height;
+        sWidth = img.height * targetRatio;
+        sx = (img.width - sWidth) / 2;
+      } else {
+        sWidth = img.width;
+        sHeight = img.width / targetRatio;
+        sy = Math.max(0, (img.height - sHeight) * 0.15);
+      }
 
-  // Decorative Laurel Garland
-  ctx.fillStyle = '#c2185b';
-  ctx.font = '34px sans-serif';
-  ctx.fillText('༺ ★ 20 • 10 • 2026 ★ ༻', 512, 530);
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(192, 170, targetW, targetH, 28);
+      ctx.clip();
+      ctx.drawImage(img, sx, sy, sWidth, sHeight, 192, 170, targetW, targetH);
+      ctx.restore();
+      texture.needsUpdate = true;
+    };
+    img.src = profile.image;
+  } else {
+    // Crown Emblem & Profile Label Fallback
+    ctx.font = '76px sans-serif';
+    ctx.fillText('👑', 512, 320);
 
-  ctx.fillStyle = '#ad1457';
-  ctx.font = 'bold 28px sans-serif';
-  ctx.fillText('Bông hoa rạng ngời của tập thể', 512, 600);
+    ctx.fillStyle = '#880e4f';
+    ctx.font = 'bold 84px "Playfair Display", serif';
+    ctx.fillText(profile.label, 512, 450);
+
+    // Decorative Laurel Garland
+    ctx.fillStyle = '#c2185b';
+    ctx.font = '34px sans-serif';
+    ctx.fillText('༺ ★ 20 • 10 • 2026 ★ ༻', 512, 530);
+
+    ctx.fillStyle = '#ad1457';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText('Bông hoa rạng ngời của tập thể', 512, 600);
+  }
 
   // 5. Name Title
   ctx.fillStyle = '#4a0026';

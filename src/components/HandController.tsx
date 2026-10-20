@@ -173,13 +173,14 @@ export function HandController() {
 
             // Cử chỉ 3: CHỈ CẦN 1 NGÓN DƠ QUA TRÁI (k cần 5 ngón) -> Chuyển người tiếp theo
             if (stage === 'GALLERY') {
-              const isFlickLeft = tipDx > 0.025 || palmDx > 0.025;
-              const isFlickRight = tipDx < -0.025 || palmDx < -0.025;
+              const isFlickLeft = tipDx > 0.038 || (palmDx > 0.038 && isPointedLeft);
+              const isFlickRight = tipDx < -0.045;
               const isFreshPointLeft = isPointedLeft && !wasPointingLeft.current;
               wasPointingLeft.current = isPointedLeft;
 
-              if (isOneFinger || isOpenPalm) {
-                if ((isFlickLeft || isFreshPointLeft) && (now - lastSwipeTime.current > 0.55)) {
+              // TUYỆT ĐỐI CHỈ DÙNG 1 NGÓN TRỎ (isOneFinger)! KHÔNG DÙNG isOpenPalm ĐỂ TRÁNH NHIỄU TÍN HIỆU!
+              if (isOneFinger) {
+                if ((isFlickLeft || isFreshPointLeft) && (now - lastSwipeTime.current > 0.75)) {
                   const currentIdx = useHandStore.getState().currentPhotoIndex;
                   // Nếu đang ở ảnh 9 (người cuối cùng), lướt tiếp sẽ tự động chuyển sang Thiệp 20/10!
                   if (currentIdx === 8) {
@@ -191,7 +192,7 @@ export function HandController() {
                     sounds.playWhoosh();
                   }
                   lastSwipeTime.current = now;
-                } else if (isFlickRight && (now - lastSwipeTime.current > 0.55)) {
+                } else if (isFlickRight && (now - lastSwipeTime.current > 0.75)) {
                   useHandStore.getState().prevPhoto();
                   sounds.playChime(0.9);
                   sounds.playWhoosh();

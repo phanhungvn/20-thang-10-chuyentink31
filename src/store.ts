@@ -44,74 +44,83 @@ export const PERSON_PROFILES: PersonProfile[] = [
   {
     id: 1,
     label: 'Ảnh 1',
-    name: 'Nguyễn Thị Ánh',
-    role: 'Nữ thần Tỏa Sáng',
-    wish: 'Chúc bạn ngày 20/10 luôn rạng ngời như ánh ban mai, hạnh phúc đong đầy và thành công trên mọi chặng đường!',
+    name: 'Trần Nữ Ngọc Bình',
+    role: 'Nữ Thần Tỏa Sáng',
+    image: '/photos/photo1.png',
+    wish: 'Chúc Ngọc Bình 20/10 luôn rạng ngời như ánh ban mai, hạnh phúc đong đầy và vạn sự như ý!',
     avatarColor: 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)',
   },
   {
     id: 2,
     label: 'Ảnh 2',
-    name: 'Trần Mai Linh',
-    role: 'Bông hồng Dịu Dàng',
-    wish: 'Chúc Mai Linh một ngày 20/10 thật ngọt ngào, nhận được ngàn đóa hoa tươi và vạn lời chúc yêu thương!',
+    name: 'Từ Phương Nhi',
+    role: 'Bông Hồng Dịu Dàng',
+    image: '/photos/photo2.jpg',
+    wish: 'Chúc Phương Nhi một ngày 20/10 thật ngọt ngào, nhận được ngàn đóa hoa tươi và vạn lời chúc yêu thương!',
     avatarColor: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
   },
   {
     id: 3,
     label: 'Ảnh 3',
-    name: 'Lê Hoàng Yến',
+    name: 'Nguyễn Đặng Đan Thuỳ',
     role: 'Nàng Thơ Tinh Tế',
-    wish: 'Chúc bạn luôn tươi vui, tự tin chinh phục mọi ước mơ và luôn giữ nụ cười tỏa nắng trên môi!',
+    image: '/photos/photo3.png',
+    wish: 'Chúc Đan Thuỳ luôn tươi vui, tự tin chinh phục mọi ước mơ và luôn giữ nụ cười tỏa nắng trên môi!',
     avatarColor: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
   },
   {
     id: 4,
     label: 'Ảnh 4',
-    name: 'Phạm Thu Trang',
-    role: 'Tài Năng & Bản Lĩnh',
-    wish: 'Chúc Thu Trang ngày 20/10 ngập tràn năng lượng tích cực, luôn xinh đẹp và gặp nhiều điều may mắn!',
-    avatarColor: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+    name: 'Phạm Lê Na',
+    role: 'Bá Khí Vương Của Lớp 👑',
+    image: '/photos/photo4.jpg',
+    wish: 'Chúc Bá Khí Vương Phạm Lê Na mãi mãi uy quyền, khí chất ngút trời, bản lĩnh phi phàm và vạn sự thành công rực rỡ!',
+    avatarColor: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%)',
   },
   {
     id: 5,
     label: 'Ảnh 5',
-    name: 'Vũ Ngọc Hân',
+    name: 'Nguyễn Ngọc Bảo An',
     role: 'Ánh Dương Năng Động',
-    wish: 'Chúc Ngọc Hân ngày càng xinh đẹp, mỗi khoảnh khắc đều ngập tràn niềm vui, tiếng cười và sự an yên!',
+    image: '/photos/photo5.jpg',
+    wish: 'Chúc Bảo An ngày càng xinh đẹp, mỗi khoảnh khắc đều ngập tràn niềm vui, tiếng cười và sự an yên!',
     avatarColor: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
   },
   {
     id: 6,
     label: 'Ảnh 6',
-    name: 'Đặng Bảo Châu',
+    name: 'Lương Ngọc Anh',
     role: 'Duyên Dáng & Kiêu Sa',
-    wish: 'Chúc Bảo Châu luôn là đóa hoa thơm ngát rực rỡ, được yêu thương và nâng niu trong từng phút giây!',
+    image: '/photos/photo6.jpg',
+    wish: 'Chúc Ngọc Anh luôn là đóa hoa thơm ngát rực rỡ, được yêu thương và nâng niu trong từng phút giây!',
     avatarColor: 'linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%)',
   },
   {
     id: 7,
     label: 'Ảnh 7',
-    name: 'Bùi Phương Thảo',
+    name: 'Trần Lê Ngọc Diệp',
     role: 'Nụ Cười Tỏa Nắng',
-    wish: 'Chúc Phương Thảo 20/10 nhận được thật nhiều quà, tình cảm đong đầy và vạn sự như ý!',
+    image: '/photos/photo7.jpg',
+    wish: 'Chúc Ngọc Diệp 20/10 nhận được thật nhiều quà, tình cảm đong đầy và vạn điều như ý!',
     avatarColor: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
   },
   {
     id: 8,
     label: 'Ảnh 8',
-    name: 'Hoàng Kim Ngân',
+    name: 'Nguyễn Hoàng Bảo Ngân',
     role: 'Quý Cô Quyến Rũ',
-    wish: 'Chúc Kim Ngân luôn tỏa sáng rực rỡ với đam mê, hạnh phúc viên mãn bên gia đình và người thương!',
+    image: '/photos/photo8.jpg',
+    wish: 'Chúc Bảo Ngân luôn tỏa sáng rực rỡ với đam mê, hạnh phúc viên mãn bên gia đình và người thương!',
     avatarColor: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
   },
   {
     id: 9,
     label: 'Ảnh 9',
-    name: 'Ngô Khánh Vy',
-    role: 'Bình Yên & Hạnh Phúc',
-    wish: 'Chúc Khánh Vy ngày 20/10 trọn vẹn yêu thương, luôn được che chở, vui vẻ và mãi mãi bình an!',
-    avatarColor: 'linear-gradient(135deg, #ff9a8b 0%, #ff6a88 55%, #ff99ac 100%)',
+    name: 'Võ Như Ngọc',
+    role: 'Viên Ngọc Quý Quý Phái',
+    image: '/photos/photo9.jpg',
+    wish: 'Chúc Như Ngọc mãi xinh đẹp như viên ngọc sáng ngời, an khang thịnh vượng và hạnh phúc ngập tràn!',
+    avatarColor: 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)',
   },
 ];
 
@@ -250,15 +259,18 @@ export const useHandStore = create<HandState>((set, get) => ({
 
   nextPhoto: () => {
     const { currentPhotoIndex } = get();
-    const nextIdx = (currentPhotoIndex + 1) % PERSON_PROFILES.length;
-    set({ currentPhotoIndex: nextIdx, activeStep: 3 });
+    // Chặn không xoay vòng từ 8 về 0
+    if (currentPhotoIndex < PERSON_PROFILES.length - 1) {
+      set({ currentPhotoIndex: currentPhotoIndex + 1, activeStep: 3 });
+    }
   },
 
   prevPhoto: () => {
     const { currentPhotoIndex } = get();
-    const prevIdx =
-      (currentPhotoIndex - 1 + PERSON_PROFILES.length) % PERSON_PROFILES.length;
-    set({ currentPhotoIndex: prevIdx, activeStep: 3 });
+    // Chặn TUYỆT ĐỐI không xoay vòng từ 0 nhảy sang 8 (tránh nhảy loạn từ Ảnh 1 sang Ảnh 9)
+    if (currentPhotoIndex > 0) {
+      set({ currentPhotoIndex: currentPhotoIndex - 1, activeStep: 3 });
+    }
   },
 
   setPhotoIndex: (idx: number) => {
