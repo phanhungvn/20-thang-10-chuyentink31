@@ -147,18 +147,21 @@ export function analyzeGestures(
   // "để tiếp tục thì dơ 3 ngón như trên + ngón trỏ": ngón trỏ + ngón giữa + ngón út
   const isUnlockGesture = index0 && middle0 && pinky0 && !ring0;
 
-  // Kiểm tra 2 bàn tay chụp lại
+  // Kiểm tra 2 bàn tay chụp / vỗ lại
   let isTwoHandsClap = false;
   if (landmarksList.length >= 2) {
     const hand1 = landmarksList[1];
     const fingers1 = [0, 1, 2, 3, 4].map((i) => isFingerExtended(hand1, i));
-    const isOpenPalm1 = fingers1.filter(Boolean).length >= 4;
+    const extCount1 = fingers1.filter(Boolean).length;
 
-    if (isOpenPalm && isOpenPalm1) {
-      const dist = Math.hypot(hand0[0].x - hand1[0].x, hand0[0].y - hand1[0].y);
-      if (dist < 0.22) {
-        isTwoHandsClap = true;
-      }
+    // Khoảng cách giữa 2 cổ tay và 2 lòng bàn tay (landmark 0: wrist, landmark 9: middle mcp)
+    const wristDist = Math.hypot(hand0[0].x - hand1[0].x, hand0[0].y - hand1[0].y);
+    const palmDist = Math.hypot(hand0[9].x - hand1[9].x, hand0[9].y - hand1[9].y);
+    const minDist = Math.min(wristDist, palmDist);
+
+    // Cả 2 tay đều mở ít nhất 3 ngón và 2 tay tiếp xúc gần nhau (< 0.28)
+    if (extCount0 >= 3 && extCount1 >= 3 && minDist < 0.28) {
+      isTwoHandsClap = true;
     }
   }
 

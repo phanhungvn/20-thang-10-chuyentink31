@@ -161,6 +161,7 @@ interface HandState {
 
   setLiveGesture: (label: string, desc: string, step?: number) => void;
   toggleGuide: () => void;
+  setGuideCollapsed: (collapsed: boolean) => void;
 }
 
 export const useHandStore = create<HandState>((set, get) => ({
@@ -295,4 +296,5 @@ export const useHandStore = create<HandState>((set, get) => ({
   },
 
   toggleGuide: () => set((state) => ({ guideCollapsed: !state.guideCollapsed })),
+  setGuideCollapsed: (collapsed: boolean) => set({ guideCollapsed: collapsed }),
 }));

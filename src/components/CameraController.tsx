@@ -3,7 +3,6 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useHandStore } from '../store';
 
-// Access shared sword position array
 declare global {
   interface Window {
     swordPositions?: THREE.Vector3[];
@@ -13,22 +12,30 @@ declare global {
 export function CameraController() {
   const { camera } = useThree();
 
-  // Unified smoothing parameters
-  const SMOOTH_SPEED = 0.02; // Approx. 2s transition time, sync with sword array enlargement speed
+  const SMOOTH_SPEED = 0.045; // Responsive smooth transition
+
+  const isCardOpened = useHandStore((state) => state.isCardOpened);
+  const stage = useHandStore((state) => state.stage);
+
+  const initZoom = stage === 'CARD' && isCardOpened ? 21.0 : 25;
+  const initY = stage === 'CARD' && isCardOpened ? 0.3 : 0;
+  const initLookZ = stage === 'CARD' && isCardOpened ? 6.5 : 0;
 
   // State
-  const smoothTarget = useRef(new THREE.Vector3(0, 0, 0));
-  const smoothCamPos = useRef(new THREE.Vector3(0, 5, 35));
-  const smoothLookAt = useRef(new THREE.Vector3(0, 0, 0));
-  const smoothZoom = useRef(30);
+  const smoothTarget = useRef(new THREE.Vector3(0, initY, 0));
+  const smoothCamPos = useRef(new THREE.Vector3(0, initY, initZoom));
+  const smoothLookAt = useRef(new THREE.Vector3(0, initY, initLookZ));
+  const smoothZoom = useRef(initZoom);
 
   useFrame(({ clock }) => {
-    // const targetPosition = useHandStore.getState().targetPosition;
     const isTracking = useHandStore.getState().isTracking;
+    const gestureMode = useHandStore.getState().gestureMode;
+    const stage = useHandStore.getState().stage;
+    const isCardOpened = useHandStore.getState().isCardOpened;
     const time = clock.getElapsedTime();
     const positions = window.swordPositions;
 
-    // === 1. 计算剑阵中心和大小 ===
+    // 1. Calculate sword formation center & size
     let formationSize = 10;
     const formationCenter = new THREE.Vector3(0, 0, 0);
 
@@ -51,27 +58,33 @@ export function CameraController() {
         sumZ += pos.z;
       }
 
-      // 剑阵中心
       formationCenter.set(
         sumX / positions.length,
         sumY / positions.length,
         sumZ / positions.length
       );
 
-      // 计算最大跨度
       const spanX = maxX - minX;
       const spanY = maxY - minY;
       formationSize = Math.max(spanX, spanY);
     }
 
-    // === 2. 计算目标缩放距离 ===
-    const gestureMode = useHandStore.getState().gestureMode; // 获取当前模式
-
-    const targetZoom = THREE.MathUtils.clamp(
-      formationSize * 1.2 + 18,
-      22,
-      gestureMode === 'DAGENG' ? 55 : 75
-    );
+    // 2. Dynamic Target Zoom distance based on Stage
+    let targetZoom: number;
+    if (stage === 'CARD') {
+      // Precision zoom for huge, readable 3D greeting card
+      targetZoom = isCardOpened ? 21.0 : 25.0;
+    } else if (stage === 'GALLERY') {
+      targetZoom = 30;
+    } else if (stage === 'FIST_ORB') {
+      targetZoom = 26;
+    } else {
+      targetZoom = THREE.MathUtils.clamp(
+        formationSize * 1.1 + 16,
+        22,
+        gestureMode === 'DAGENG' ? 45 : 60
+      );
+    }
 
     smoothZoom.current = THREE.MathUtils.lerp(
       smoothZoom.current,
@@ -79,34 +92,42 @@ export function CameraController() {
       SMOOTH_SPEED
     );
 
-    // === 3. 计算跟随目标 ===
+    // 3. Follow Point
     let followPoint: THREE.Vector3;
-    if (isTracking) {
-      // 跟随剑阵中心，而不是手指位置
+    if (stage === 'CARD') {
+      // Center camera squarely on the letter (0.3) or closed envelope (0.0)
+      followPoint = new THREE.Vector3(0, isCardOpened ? 0.3 : 0.0, 0);
+    } else if (stage === 'GALLERY') {
+      followPoint = new THREE.Vector3(0, 1.2, 0);
+    } else if (stage === 'FIST_ORB') {
+      followPoint = isTracking
+        ? useHandStore.getState().targetPosition.clone()
+        : new THREE.Vector3(0, 0, 0);
+    } else if (isTracking) {
       followPoint = formationCenter.clone();
     } else {
       followPoint = new THREE.Vector3(
-        Math.sin(time * 0.5) * 6,
-        Math.cos(time * 0.4) * 4,
+        Math.sin(time * 0.5) * 4,
+        Math.cos(time * 0.4) * 3,
         0
       );
     }
     smoothTarget.current.lerp(followPoint, SMOOTH_SPEED);
 
-    // === 4. 计算相机位置（与缩放协调）===
+    // 4. Desired Camera Position
     const desiredCamPos = new THREE.Vector3(
-      smoothTarget.current.x * 0.25, // 轻微左右跟随
-      smoothTarget.current.y * 0.15 + 3, // 轻微上下跟随
-      smoothZoom.current // 使用平滑后的缩放
+      stage === 'CARD' ? 0 : smoothTarget.current.x * 0.2,
+      stage === 'CARD' ? (isCardOpened ? 0.3 : 0.0) : smoothTarget.current.y * 0.15 + 2.5,
+      smoothZoom.current
     );
     smoothCamPos.current.lerp(desiredCamPos, SMOOTH_SPEED);
     camera.position.copy(smoothCamPos.current);
 
-    // === 5. 计算注视点（与跟随协调）===
+    // 5. Desired Look At
     const desiredLookAt = new THREE.Vector3(
-      smoothTarget.current.x * 0.4,
-      smoothTarget.current.y * 0.25,
-      4 // 注视剑阵所在平面
+      stage === 'CARD' ? 0 : smoothTarget.current.x * 0.3,
+      stage === 'CARD' ? (isCardOpened ? 0.3 : 0.0) : smoothTarget.current.y * 0.2,
+      stage === 'CARD' ? (isCardOpened ? 6.5 : 0.0) : 4
     );
     smoothLookAt.current.lerp(desiredLookAt, SMOOTH_SPEED);
     camera.lookAt(smoothLookAt.current);

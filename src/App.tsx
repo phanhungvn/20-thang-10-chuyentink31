@@ -399,8 +399,8 @@ function GestureListModal({ onConfirmStart }: { onConfirmStart: () => void }) {
       step: 'Bước 6',
       icon: '👏',
       name: 'Chụp 2 Bàn Tay',
-      desc: 'Mở thiệp bung pháo hoa',
-      detail: 'Mở 2 bàn tay 5 ngón rồi chụp lại với nhau để bung mở nắp thiệp, pháo hoa & hoa hồng rơi.',
+      desc: 'Lá thư 3D rút bay ra & hiện to rõ',
+      detail: 'Chụp / vỗ 2 bàn tay lại: phong bì mở nắp, lá thư 3D tự động rút bay ra và phóng to trước màn hình cùng pháo hoa & hoa hồng!',
     },
   ];
 
@@ -641,7 +641,7 @@ function RealtimeGestureGuide({ hasCamera }: { hasCamera: boolean }) {
       num: 6,
       icon: '👏',
       name: 'Chụp 2 bàn tay',
-      desc: 'Mở thiệp bung tỏa pháo hoa',
+      desc: 'Lá thư 3D rút bay ra & hiện to rõ',
       isCurrent: stage === 'CARD' && isCardOpened,
       onClick: () => {
         setStage('CARD');
@@ -1200,11 +1200,37 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
   const isCardOpened = useHandStore((state) => state.isCardOpened);
   const setCardOpened = useHandStore((state) => state.setCardOpened);
   const setStage = useHandStore((state) => state.setStage);
+  const setGuideCollapsed = useHandStore((state) => state.setGuideCollapsed);
   const [copied, setCopied] = useState(false);
+  const [showZoomReader, setShowZoomReader] = useState(false);
+
+  useEffect(() => {
+    if (isCardOpened) {
+      setGuideCollapsed(true);
+    }
+  }, [isCardOpened, setGuideCollapsed]);
+
+  useEffect(() => {
+    const handleOpenZoom = () => {
+      setShowZoomReader(true);
+    };
+    window.addEventListener('open-letter-zoom', handleOpenZoom);
+    return () => window.removeEventListener('open-letter-zoom', handleOpenZoom);
+  }, []);
 
   if (stage !== 'CARD') return null;
 
-  const wishContent = `Kính chúc toàn thể phái đẹp luôn luôn xinh đẹp rạng ngời, ngập tràn sức khỏe, hạnh phúc viên mãn bên những người yêu thương và luôn tự tin tỏa sáng với đam mê của mình! Chúc mừng ngày Phụ Nữ Việt Nam 20/10! 🌸💖`;
+  const wishContent = `🌸 THƯ CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM 20/10 🌸
+Kính gửi toàn thể một nửa thế giới thân yêu!
+
+Nhân ngày Phụ Nữ Việt Nam 20/10, xin trân trọng kính chúc toàn thể các chị, các em:
+🌸 Luôn tươi vui, rạng ngời như những đóa hoa sớm mai,
+💖 Nụ cười tỏa nắng, tâm hồn an yên và đong đầy hạnh phúc,
+✨ Luôn tự tin, bản lĩnh gặt hái ngàn thành công rực rỡ,
+🌹 Và mãi mãi được yêu thương, nâng niu trọn vẹn từng khoảnh khắc!
+
+💖 Thân tặng những người phụ nữ tuyệt vời nhất! 💖
+HOCENG VIP • 20/10/2026`;
 
   const copyWish = () => {
     navigator.clipboard.writeText(wishContent);
@@ -1220,81 +1246,93 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: '80px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 140,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '12px',
-        pointerEvents: 'auto',
-      }}
-    >
-      {!isCardOpened ? (
-        <button
-          onClick={handleOpenCard}
-          style={{
-            padding: '16px 40px',
-            borderRadius: '40px',
-            background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 50%, #880e4f 100%)',
-            border: '2px solid #ffd700',
-            color: '#ffffff',
-            fontSize: '17px',
-            fontWeight: '900',
-            cursor: 'pointer',
-            boxShadow: '0 0 35px rgba(216, 27, 96, 0.7), 0 0 16px #ffd700',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            animation: 'pulseGold 2s infinite ease-in-out',
-          }}
-        >
-          <span style={{ fontSize: '24px' }}>👏</span>
-          <span>Chụp 2 bàn tay hoặc Click để MỞ THIỆP!</span>
-          <span style={{ fontSize: '11px', opacity: 0.85, padding: '2px 8px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px' }}>[Space]</span>
-        </button>
-      ) : (
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.98)',
-            border: '2px solid #ffd700',
-            borderRadius: '32px',
-            padding: '28px 36px',
-            backdropFilter: 'blur(30px)',
-            boxShadow: '0 20px 60px rgba(216, 27, 96, 0.25), 0 0 45px rgba(255, 215, 0, 0.4)',
-            textAlign: 'center',
-            maxWidth: '620px',
-            animation: 'floatGentle 4s infinite ease-in-out',
-          }}
-        >
-          <div style={{ fontSize: '42px', marginBottom: '8px' }}>🌸 💖 👑 💖 🌸</div>
-          <h2
+    <>
+      {/* 1. Thanh điều khiển nổi phía dưới (Không che khuất không gian 3D) */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '80px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 140,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '12px',
+          pointerEvents: 'auto',
+        }}
+      >
+        {!isCardOpened ? (
+          <button
+            onClick={handleOpenCard}
             style={{
-              fontFamily: "'Playfair Display', serif",
-              color: '#880e4f',
-              fontSize: '26px',
-              margin: '0 0 12px 0',
+              padding: '16px 44px',
+              borderRadius: '40px',
+              background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 50%, #880e4f 100%)',
+              border: '2px solid #ffd700',
+              color: '#ffffff',
+              fontSize: '17px',
               fontWeight: '900',
+              cursor: 'pointer',
+              boxShadow: '0 0 40px rgba(216, 27, 96, 0.75), 0 0 20px #ffd700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              animation: 'pulseGold 2s infinite ease-in-out',
             }}
           >
-            CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM 20/10!
-          </h2>
-          <p style={{ color: '#37474f', fontSize: '15.5px', lineHeight: '1.65', margin: '0 0 20px 0', fontStyle: 'italic' }}>
-            {wishContent}
-          </p>
+            <span style={{ fontSize: '24px' }}>👏</span>
+            <span>Chụp 2 bàn tay hoặc Click để RÚT LÁ THƯ RA!</span>
+            <span style={{ fontSize: '11px', opacity: 0.9, padding: '3px 10px', background: 'rgba(0,0,0,0.25)', borderRadius: '8px' }}>[Space]</span>
+          </button>
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              background: 'rgba(255, 255, 255, 0.96)',
+              padding: '10px 22px',
+              borderRadius: '36px',
+              border: '2px solid #ffd700',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 15px 45px rgba(216, 27, 96, 0.25), 0 0 25px rgba(255, 215, 0, 0.35)',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              animation: 'floatGentle 4s infinite ease-in-out',
+            }}
+          >
+            <button
+              onClick={() => {
+                setShowZoomReader(!showZoomReader);
+                sounds.playChime(1.3);
+              }}
+              title="Phóng to nội dung thư dạng trang trọng dễ đọc nhất"
+              style={{
+                padding: '9px 20px',
+                borderRadius: '24px',
+                background: showZoomReader ? 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)' : 'rgba(216, 27, 96, 0.1)',
+                border: '1.5px solid #d81b60',
+                color: showZoomReader ? '#ffffff' : '#880e4f',
+                fontSize: '13.5px',
+                fontWeight: '900',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: showZoomReader ? '0 4px 14px rgba(216, 27, 96, 0.4)' : 'none',
+              }}
+            >
+              <span>{showZoomReader ? '✕ Thu Nhỏ Thư' : '🔍 Phóng To Đọc Rõ'}</span>
+            </button>
 
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
               onClick={() => {
                 onCelebrate();
                 sounds.playCelebrationFanfare();
               }}
               style={{
-                padding: '10px 22px',
+                padding: '9px 20px',
                 borderRadius: '24px',
                 background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
                 border: 'none',
@@ -1303,34 +1341,65 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
                 fontWeight: '900',
                 cursor: 'pointer',
                 boxShadow: '0 4px 16px rgba(255, 215, 0, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
               }}
             >
-              🎆 Tung Thêm Pháo Hoa
+              <span>🎆 Tung Pháo Hoa</span>
             </button>
 
             <button
               onClick={copyWish}
               style={{
-                padding: '10px 22px',
+                padding: '9px 18px',
                 borderRadius: '24px',
                 background: copied ? 'rgba(0, 230, 118, 0.15)' : 'rgba(0, 0, 0, 0.05)',
                 border: copied ? '1.5px solid #00e676' : '1px solid rgba(0, 0, 0, 0.15)',
                 color: copied ? '#00c853' : '#455a64',
-                fontSize: '13.5px',
+                fontSize: '13px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
               }}
             >
-              {copied ? '✓ Đã sao chép!' : '📋 Sao Chép Lời Chúc'}
+              <span>{copied ? '✓ Đã sao chép!' : '📋 Sao Chép Lời Chúc'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setCardOpened(false);
+                setShowZoomReader(false);
+                sounds.playWhoosh();
+              }}
+              title="Đóng nắp phong bì để biểu diễn lại"
+              style={{
+                padding: '9px 18px',
+                borderRadius: '24px',
+                background: 'rgba(233, 30, 99, 0.08)',
+                border: '1px solid #d81b60',
+                color: '#880e4f',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <span>🔄 Thu Lại Vào Phong Bì</span>
             </button>
 
             <button
               onClick={() => {
                 setStage('GALLERY');
+                setShowZoomReader(false);
                 sounds.playWhoosh();
               }}
               style={{
-                padding: '10px 22px',
+                padding: '9px 20px',
                 borderRadius: '24px',
                 background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)',
                 border: 'none',
@@ -1339,29 +1408,194 @@ function CardCelebrationModal({ onCelebrate }: { onCelebrate: () => void }) {
                 fontWeight: 'bold',
                 cursor: 'pointer',
                 boxShadow: '0 4px 16px rgba(216, 27, 96, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
               }}
             >
-              🌸 Xem Lại 9 Mỹ Nhân
+              <span>🌸 Về 9 Mỹ Nhân</span>
             </button>
+          </div>
+        )}
+      </div>
 
+      {/* 2. Chế độ Phóng To Đọc Rõ Toàn Màn Hình (Chữ Cực Lớn, Sang Trọng, Sắc Nét 100%) */}
+      {isCardOpened && showZoomReader && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 170,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(255, 240, 245, 0.7)',
+            backdropFilter: 'blur(20px)',
+            padding: '20px',
+          }}
+          onClick={() => setShowZoomReader(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 0%, #fff9fa 50%, #fcedf2 100%)',
+              border: '3px solid #ffd700',
+              borderRadius: '36px',
+              padding: '40px 48px',
+              maxWidth: '840px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              boxShadow: '0 25px 80px rgba(216, 27, 96, 0.3), 0 0 50px rgba(255, 215, 0, 0.45)',
+              textAlign: 'center',
+              position: 'relative',
+              animation: 'pulseGlow 4s infinite ease-in-out',
+            }}
+          >
+            {/* Nút đóng */}
             <button
-              onClick={() => setCardOpened(false)}
+              onClick={() => setShowZoomReader(false)}
               style={{
-                padding: '10px 22px',
-                borderRadius: '24px',
-                background: 'rgba(0, 0, 0, 0.05)',
-                border: '1px solid rgba(0, 0, 0, 0.15)',
-                color: '#666',
-                fontSize: '13.5px',
+                position: 'absolute',
+                top: '20px',
+                right: '24px',
+                background: 'rgba(216, 27, 96, 0.1)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '38px',
+                height: '38px',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                color: '#880e4f',
                 cursor: 'pointer',
               }}
             >
-              Đóng thiệp
+              ✕
             </button>
+
+            <div style={{ fontSize: '48px', marginBottom: '8px' }}>🌸 💖 👑 💖 🌸</div>
+            <div style={{ fontSize: '13px', fontWeight: '900', color: '#c2185b', letterSpacing: '1px', marginBottom: '6px' }}>
+              ✨ ĐẠI TIỆC TÔN VINH PHÁI ĐẸP 20/10 ✨
+            </div>
+            <h1
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: '#880e4f',
+                fontSize: '34px',
+                fontWeight: '900',
+                margin: '0 0 6px 0',
+              }}
+            >
+              THƯ CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM
+            </h1>
+            <div style={{ color: '#d81b60', fontSize: '18px', fontStyle: 'italic', fontWeight: 'bold', marginBottom: '16px' }}>
+              ✦ 20 THÁNG 10 • HAPPY WOMEN'S DAY ✦
+            </div>
+
+            <div style={{ width: '180px', height: '3px', background: 'linear-gradient(90deg, transparent, #ffd700, transparent)', margin: '0 auto 20px auto' }} />
+
+            <div
+              style={{
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                color: '#1a000d',
+                fontSize: '20px',
+                lineHeight: '1.85',
+                background: 'rgba(255, 255, 255, 0.85)',
+                padding: '24px 30px',
+                borderRadius: '24px',
+                border: '1.5px solid rgba(255, 215, 0, 0.6)',
+                marginBottom: '24px',
+                textAlign: 'left',
+                boxShadow: 'inset 0 0 15px rgba(255, 240, 245, 0.5)',
+              }}
+            >
+              <p style={{ fontWeight: 'bold', fontSize: '22px', color: '#880e4f', marginBottom: '14px' }}>
+                Kính gửi toàn thể một nửa thế giới thân yêu!
+              </p>
+              <p style={{ marginBottom: '12px' }}>
+                Nhân ngày Phụ Nữ Việt Nam 20/10, xin trân trọng kính chúc toàn thể các chị, các em:
+              </p>
+              <p style={{ marginBottom: '10px', paddingLeft: '8px' }}>
+                🌸 <strong>Luôn tươi vui, rạng ngời</strong> như những đóa hoa ngát hương sớm mai.
+              </p>
+              <p style={{ marginBottom: '10px', paddingLeft: '8px' }}>
+                💖 <strong>Nụ cười luôn tỏa nắng</strong>, tâm hồn bình an và đong đầy hạnh phúc yêu thương.
+              </p>
+              <p style={{ marginBottom: '10px', paddingLeft: '8px' }}>
+                ✨ <strong>Luôn tự tin, bản lĩnh</strong> và gặt hái được ngàn thành công rực rỡ trong sự nghiệp.
+              </p>
+              <p style={{ marginBottom: '14px', paddingLeft: '8px' }}>
+                🌹 Và mãi mãi là <strong>nguồn cảm hứng diệu kỳ</strong>, được trân quý nâng niu trong từng phút giây!
+              </p>
+              <p style={{ fontStyle: 'italic', color: '#c2185b', textAlign: 'right', marginTop: '16px', fontWeight: 'bold' }}>
+                💖 Thân tặng những người phụ nữ tuyệt vời nhất! 💖
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => {
+                  onCelebrate();
+                  sounds.playCelebrationFanfare();
+                }}
+                style={{
+                  padding: '12px 28px',
+                  borderRadius: '30px',
+                  background: 'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)',
+                  border: 'none',
+                  color: '#4a0026',
+                  fontSize: '15px',
+                  fontWeight: '900',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 18px rgba(255, 215, 0, 0.45)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <span>🎆 Bắn Thêm Pháo Hoa</span>
+              </button>
+
+              <button
+                onClick={copyWish}
+                style={{
+                  padding: '12px 26px',
+                  borderRadius: '30px',
+                  background: copied ? 'rgba(0, 230, 118, 0.15)' : 'rgba(0, 0, 0, 0.05)',
+                  border: copied ? '2px solid #00e676' : '1px solid rgba(0, 0, 0, 0.15)',
+                  color: copied ? '#00c853' : '#37474f',
+                  fontSize: '15px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <span>{copied ? '✓ Đã sao chép vào clipboard!' : '📋 Sao Chép Lời Chúc'}</span>
+              </button>
+
+              <button
+                onClick={() => setShowZoomReader(false)}
+                style={{
+                  padding: '12px 26px',
+                  borderRadius: '30px',
+                  background: 'linear-gradient(135deg, #d81b60 0%, #ad1457 100%)',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(216, 27, 96, 0.35)',
+                }}
+              >
+                <span>✕ Thu Nhỏ (Xem Thiệp 3D)</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

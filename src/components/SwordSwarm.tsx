@@ -157,7 +157,20 @@ export function SwordSwarm() {
       const vel = velocities.current[i];
       const target = new THREE.Vector3();
 
-      if (stage === 'FIST_ORB' || gestureMode === 'SHIELD') {
+      if (stage === 'CARD') {
+        // ============ CARD MODE: Majestic Celestial Sunburst Ring BEHIND Letter ============
+        // Swords form an expansive golden ring deep behind the card (z <= -10, radius 25-32)
+        // Radiant imperial honor guard framing the card, NEVER obstructing the letter!
+        const angle = (i / CONFIG.swordCount) * Math.PI * 2 + time * 0.12;
+        const radius = 25 + (i % 4) * 2.2;
+        const zDepth = -10.0 - (i % 3) * 2.0;
+
+        target.set(
+          Math.cos(angle) * radius,
+          Math.sin(angle) * radius + 0.2,
+          zDepth
+        );
+      } else if (stage === 'FIST_ORB' || gestureMode === 'SHIELD') {
         // ============ Shield Orb Mode: Swirling Inside & Orbiting Sphere ============
         // Distribute uniformly on Fibonacci sphere
         const phi = Math.acos(1 - (2 * (i + 0.5)) / CONFIG.swordCount);
@@ -283,7 +296,9 @@ export function SwordSwarm() {
 
       // Dynamic Speed
       let speed =
-        stage === 'FIST_ORB' || gestureMode === 'SHIELD'
+        stage === 'CARD'
+          ? CONFIG.sprintSpeed * 2.2
+          : stage === 'FIST_ORB' || gestureMode === 'SHIELD'
           ? CONFIG.sprintSpeed
           : CONFIG.maxSpeed;
       if (target.distanceTo(pos) > 4) speed = CONFIG.sprintSpeed;
@@ -304,16 +319,22 @@ export function SwordSwarm() {
 
       const steer = desired.sub(vel);
       const steerFactor =
-        stage === 'FIST_ORB' || gestureMode === 'LOTUS' ? 3.2 : 1.2;
+        stage === 'CARD' ? 5.5 : stage === 'FIST_ORB' || gestureMode === 'LOTUS' ? 3.2 : 1.2;
       steer.clampLength(0, CONFIG.steerForce * delta * steerFactor);
       vel.add(steer);
 
       pos.add(vel.clone().multiplyScalar(delta));
+      if (stage === 'CARD' && pos.z > -8.0) {
+        pos.z = -8.0; // Strictly ensure swords are always deep behind the greeting card
+      }
       dummy.position.copy(pos);
 
       // Orientation
       let lookTarget: THREE.Vector3;
-      if (stage === 'FIST_ORB' || gestureMode === 'SHIELD') {
+      if (stage === 'CARD') {
+        const outward = new THREE.Vector3(pos.x, pos.y, 0).normalize();
+        lookTarget = pos.clone().add(outward);
+      } else if (stage === 'FIST_ORB' || gestureMode === 'SHIELD') {
         if (vel.length() > 0.1) {
           lookTarget = pos.clone().add(vel.clone().normalize());
         } else {
